@@ -4,7 +4,7 @@
   "description": "jsctags generator",
   "keywords": [
     "ctags",
-    "jscatgs",
+    "jsctags",
     "tern"
   ],
   "homepage": "https://github.com/ramitos/jsctags",
@@ -14,7 +14,7 @@
   },
   "license": "MIT",
   "main": "src/parser.js",
-  "bin": "bin/jscatgs",
+  "bin": "bin/jsctags",
   "directories": {
     "lib": "src",
     "bin": "bin"

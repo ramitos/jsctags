@@ -4,8 +4,17 @@ jsctags generator using [tern](https://github.com/marijnh/tern)
 
 ## install
 
+For access to the binary:
+
 ```sh
-npm install [-g] [--save/--save-dev] git://git@github.com:ramitos/jsctags.git
+npm install -g git://github.com/ramitos/jsctags.git
+```
+
+Otherwise, add to your project's package.json under dependencies or
+dev-dependencies:
+
+```
+"jsctags": "git://github.com/ramitos/jsctags.git"
 ```
 
 ## usage
