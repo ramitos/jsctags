@@ -1,3 +1,7 @@
+# global_this
+
+### Input file
+
 ```js
 var foo = 10;
 
@@ -5,6 +9,9 @@ var foo = 10;
   this.foo; //: number
 })();
 ```
+
+### Output - JSON
+
 ```json
 [
   {
@@ -12,10 +19,15 @@ var foo = 10;
     "addr": "/foo/",
     "kind": "v",
     "type": "number",
-    "lineno": 1
+    "lineno": 1,
+    "tagfile": "/global_this.js"
   }
 ]
 ```
+
+### Output - ctags
+
 ```ctags
-foo		/foo/;"	v	lineno:1	type:number
+foo	/global_this.js	/foo/;"	v	lineno:1	type:number
+
 ```

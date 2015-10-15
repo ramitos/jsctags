@@ -1,3 +1,7 @@
+# effects
+
+### Input file
+
 ```js
 ["foo", "bar"].map(function(s) { return s.charCodeAt(0); }); //: [number]
 
@@ -15,6 +19,9 @@ function setD(a) { d = a; }
 setD.call(null, 55);
 d; //: number
 ```
+
+### Output - JSON
+
 ```json
 [
   {
@@ -22,37 +29,42 @@ d; //: number
     "addr": "/b/",
     "kind": "v",
     "type": "[bool]",
-    "lineno": 3
+    "lineno": 3,
+    "tagfile": "/effects.js"
   },
   {
     "name": "c",
     "addr": "/c/",
     "kind": "v",
-    "type": "[?]",
-    "lineno": 7
+    "type": "[string|number]",
+    "lineno": 7,
+    "tagfile": "/effects.js"
   },
   {
     "name": "d",
     "addr": "/d/",
     "kind": "v",
     "type": "number",
-    "lineno": 12
+    "lineno": 12,
+    "tagfile": "/effects.js"
   },
   {
     "name": "setD",
     "addr": "/setD/",
     "kind": "f",
     "type": "void function(number)",
-    "lineno": 13
+    "lineno": 13,
+    "tagfile": "/effects.js"
   }
 ]
 ```
+
+### Output - ctags
+
 ```ctags
-b		/b/;"	v	lineno:3	type:[bool]
+b	/effects.js	/b/;"	v	lineno:3	type:[bool]
+c	/effects.js	/c/;"	v	lineno:7	type:[string|number]
+d	/effects.js	/d/;"	v	lineno:12	type:number
+setD	/effects.js	/setD/;"	f	lineno:13	type:void function(number)
 
-c		/c/;"	v	lineno:7	type:[?]
-
-d		/d/;"	v	lineno:12	type:number
-
-setD		/setD/;"	f	lineno:13	type:void function(number)
 ```

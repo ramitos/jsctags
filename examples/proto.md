@@ -1,3 +1,7 @@
+# proto
+
+### Input file
+
 ```js
 function Foo(x) {
   this.x = x;
@@ -16,6 +20,9 @@ z.toString; //: fn() -> string
 
 z.bar; //: number
 ```
+
+### Output - JSON
+
 ```json
 [
   {
@@ -23,7 +30,8 @@ z.bar; //: number
     "addr": "/Foo/",
     "kind": "f",
     "type": "void function(bool)",
-    "lineno": 1
+    "lineno": 1,
+    "tagfile": "/proto.js"
   },
   {
     "name": "x",
@@ -31,7 +39,8 @@ z.bar; //: number
     "kind": "v",
     "type": "boolean",
     "lineno": 2,
-    "namespace": "Foo"
+    "namespace": "Foo",
+    "tagfile": "/proto.js"
   },
   {
     "name": "y",
@@ -39,7 +48,8 @@ z.bar; //: number
     "kind": "v",
     "type": "[number]",
     "lineno": 3,
-    "namespace": "Foo"
+    "namespace": "Foo",
+    "tagfile": "/proto.js"
   },
   {
     "name": "makeString",
@@ -47,7 +57,8 @@ z.bar; //: number
     "kind": "f",
     "type": "string function()",
     "lineno": 8,
-    "namespace": "Foo.prototype"
+    "namespace": "Foo.prototype",
+    "tagfile": "/proto.js"
   },
   {
     "name": "bar",
@@ -55,27 +66,28 @@ z.bar; //: number
     "kind": "v",
     "type": "number",
     "lineno": 9,
-    "namespace": "Foo.prototype"
+    "namespace": "Foo.prototype",
+    "tagfile": "/proto.js"
   },
   {
     "name": "z",
     "addr": "/z/",
     "kind": "v",
     "type": "+Foo",
-    "lineno": 12
+    "lineno": 12,
+    "tagfile": "/proto.js"
   }
 ]
 ```
+
+### Output - ctags
+
 ```ctags
-Foo		/Foo/;"	f	lineno:1	type:void function(bool)
+Foo	/proto.js	/Foo/;"	f	lineno:1	type:void function(bool)
+bar	/proto.js	/bar/;"	v	lineno:9	namespace:Foo.prototype	type:number
+makeString	/proto.js	/makeString/;"	f	lineno:8	namespace:Foo.prototype	type:string function()
+x	/proto.js	/x/;"	v	lineno:2	namespace:Foo	type:boolean
+y	/proto.js	/y/;"	v	lineno:3	namespace:Foo	type:[number]
+z	/proto.js	/z/;"	v	lineno:12	type:+Foo
 
-x		/x/;"	v	lineno:2	namespace:Foo	type:boolean
-
-y		/y/;"	v	lineno:3	namespace:Foo	type:[number]
-
-makeString		/makeString/;"	f	lineno:8	namespace:Foo.prototype	type:string function()
-
-bar		/bar/;"	v	lineno:9	namespace:Foo.prototype	type:number
-
-z		/z/;"	v	lineno:12	type:+Foo
 ```

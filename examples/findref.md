@@ -1,3 +1,7 @@
+# findref
+
+### Input file
+
 ```js
 function hello(a, b) {
   var c = a + b;
@@ -20,6 +24,9 @@ obj.z = "hi";
 obj.x;
 obj.z; //refs: 17,4 20,4
 ```
+
+### Output - JSON
+
 ```json
 [
   {
@@ -27,7 +34,8 @@ obj.z; //refs: 17,4 20,4
     "addr": "/hello/",
     "kind": "f",
     "type": "void function(?, ?)",
-    "lineno": 1
+    "lineno": 1,
+    "tagfile": "/findref.js"
   },
   {
     "name": "x",
@@ -35,7 +43,8 @@ obj.z; //refs: 17,4 20,4
     "kind": "v",
     "type": "number",
     "lineno": 11,
-    "namespace": "obj"
+    "namespace": "obj",
+    "tagfile": "/findref.js"
   },
   {
     "name": "y",
@@ -43,7 +52,8 @@ obj.z; //refs: 17,4 20,4
     "kind": "v",
     "type": "number",
     "lineno": 13,
-    "namespace": "obj"
+    "namespace": "obj",
+    "tagfile": "/findref.js"
   },
   {
     "name": "z",
@@ -51,16 +61,18 @@ obj.z; //refs: 17,4 20,4
     "kind": "v",
     "type": "string",
     "lineno": 17,
-    "namespace": "obj"
+    "namespace": "obj",
+    "tagfile": "/findref.js"
   }
 ]
 ```
+
+### Output - ctags
+
 ```ctags
-hello		/hello/;"	f	lineno:1	type:void function(?, ?)
+hello	/findref.js	/hello/;"	f	lineno:1	type:void function(?, ?)
+x	/findref.js	/x/;"	v	lineno:11	namespace:obj	type:number
+y	/findref.js	/y/;"	v	lineno:13	namespace:obj	type:number
+z	/findref.js	/z/;"	v	lineno:17	namespace:obj	type:string
 
-x		/x/;"	v	lineno:11	namespace:obj	type:number
-
-y		/y/;"	v	lineno:13	namespace:obj	type:number
-
-z		/z/;"	v	lineno:17	namespace:obj	type:string
 ```

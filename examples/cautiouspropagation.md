@@ -1,3 +1,7 @@
+# cautiouspropagation
+
+### Input file
+
 ```js
 var grabbag = {};
 grabbag[foo()] = "hi";
@@ -12,6 +16,9 @@ simple[bar()] = "b";
 simple[baz()] = "c";
 simple[quux()]; //: string
 ```
+
+### Output - JSON
+
 ```json
 [
   {
@@ -19,10 +26,25 @@ simple[quux()]; //: string
     "addr": "/inner/",
     "kind": "v",
     "type": "number",
-    "lineno": 5
+    "lineno": 5,
+    "tagfile": "/cautiouspropagation.js"
+  },
+  {
+    "name": "<i>",
+    "addr": "/foo\\(\\)/",
+    "kind": "v",
+    "type": "string",
+    "lineno": 9,
+    "namespace": "simple",
+    "tagfile": "/cautiouspropagation.js"
   }
 ]
 ```
+
+### Output - ctags
+
 ```ctags
-inner		/inner/;"	v	lineno:5	type:number
+<i>	/cautiouspropagation.js	/foo\(\)/;"	v	lineno:9	namespace:simple	type:string
+inner	/cautiouspropagation.js	/inner/;"	v	lineno:5	type:number
+
 ```

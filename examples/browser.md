@@ -1,3 +1,7 @@
+# browser
+
+### Input file
+
 ```js
 // environment=browser
 
@@ -11,6 +15,9 @@ var e_which;
 window.addEventListener("mousemove", function(e) { e_which = e.which; });
 e_which; //: number
 ```
+
+### Output - JSON
+
 ```json
 [
   {
@@ -18,19 +25,24 @@ e_which; //: number
     "addr": "/newElt/",
     "kind": "v",
     "type": "+Element",
-    "lineno": 5
+    "lineno": 5,
+    "tagfile": "/browser.js"
   },
   {
     "name": "e_which",
     "addr": "/e_which/",
     "kind": "v",
     "type": "number",
-    "lineno": 9
+    "lineno": 9,
+    "tagfile": "/browser.js"
   }
 ]
 ```
-```ctags
-newElt		/newElt/;"	v	lineno:5	type:+Element
 
-e_which		/e_which/;"	v	lineno:9	type:number
+### Output - ctags
+
+```ctags
+e_which	/browser.js	/e_which/;"	v	lineno:9	type:number
+newElt	/browser.js	/newElt/;"	v	lineno:5	type:+Element
+
 ```

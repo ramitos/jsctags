@@ -1,3 +1,7 @@
+# simple
+
+### Input file
+
 ```js
 var foo = (function() {
   return 42;
@@ -15,6 +19,9 @@ init; //:: fn(v: {bar: number, foo: number})
 init(x);
 x; //:: {bar: number, foo: number}
 ```
+
+### Output - JSON
+
 ```json
 [
   {
@@ -22,14 +29,16 @@ x; //:: {bar: number, foo: number}
     "addr": "/foo/",
     "kind": "v",
     "type": "number",
-    "lineno": 1
+    "lineno": 1,
+    "tagfile": "/simple.js"
   },
   {
     "name": "init",
     "addr": "/init/",
     "kind": "f",
     "type": "void function(x)",
-    "lineno": 8
+    "lineno": 8,
+    "tagfile": "/simple.js"
   },
   {
     "name": "foo",
@@ -37,7 +46,8 @@ x; //:: {bar: number, foo: number}
     "kind": "v",
     "type": "number",
     "lineno": 9,
-    "namespace": "x"
+    "namespace": "x",
+    "tagfile": "/simple.js"
   },
   {
     "name": "bar",
@@ -45,16 +55,18 @@ x; //:: {bar: number, foo: number}
     "kind": "v",
     "type": "number",
     "lineno": 10,
-    "namespace": "x"
+    "namespace": "x",
+    "tagfile": "/simple.js"
   }
 ]
 ```
+
+### Output - ctags
+
 ```ctags
-foo		/foo/;"	v	lineno:1	type:number
+bar	/simple.js	/bar/;"	v	lineno:10	namespace:x	type:number
+foo	/simple.js	/foo/;"	v	lineno:1	type:number
+foo	/simple.js	/foo/;"	v	lineno:9	namespace:x	type:number
+init	/simple.js	/init/;"	f	lineno:8	type:void function(x)
 
-init		/init/;"	f	lineno:8	type:void function(x)
-
-foo		/foo/;"	v	lineno:9	namespace:x	type:number
-
-bar		/bar/;"	v	lineno:10	namespace:x	type:number
 ```

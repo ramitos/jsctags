@@ -1,3 +1,7 @@
+# object_create
+
+### Input file
+
 ```js
 var base = {foo: 10, bar: 20};
 var gen1 = Object.create(base);
@@ -33,6 +37,9 @@ empty.prop1 = "hi";
 empty.hasOwnProperty; //: ?
 empty.prop1; //: string
 ```
+
+### Output - JSON
+
 ```json
 [
   {
@@ -41,7 +48,8 @@ empty.prop1; //: string
     "kind": "v",
     "type": "number",
     "lineno": 1,
-    "namespace": "base"
+    "namespace": "base",
+    "tagfile": "/object_create.js"
   },
   {
     "name": "bar",
@@ -49,7 +57,8 @@ empty.prop1; //: string
     "kind": "v",
     "type": "number",
     "lineno": 1,
-    "namespace": "base"
+    "namespace": "base",
+    "tagfile": "/object_create.js"
   },
   {
     "name": "baz",
@@ -57,7 +66,8 @@ empty.prop1; //: string
     "kind": "v",
     "type": "number",
     "lineno": 5,
-    "namespace": "base"
+    "namespace": "base",
+    "tagfile": "/object_create.js"
   },
   {
     "name": "quux",
@@ -65,7 +75,8 @@ empty.prop1; //: string
     "kind": "v",
     "type": "number",
     "lineno": 6,
-    "namespace": "gen1"
+    "namespace": "gen1",
+    "tagfile": "/object_create.js"
   },
   {
     "name": "kaka",
@@ -73,7 +84,8 @@ empty.prop1; //: string
     "kind": "v",
     "type": "number",
     "lineno": 7,
-    "namespace": "gen2"
+    "namespace": "gen2",
+    "tagfile": "/object_create.js"
   },
   {
     "name": "prop1",
@@ -81,20 +93,20 @@ empty.prop1; //: string
     "kind": "v",
     "type": "string",
     "lineno": 30,
-    "namespace": "empty"
+    "namespace": "empty",
+    "tagfile": "/object_create.js"
   }
 ]
 ```
+
+### Output - ctags
+
 ```ctags
-foo		/foo/;"	v	lineno:1	namespace:base	type:number
+bar	/object_create.js	/bar/;"	v	lineno:1	namespace:base	type:number
+baz	/object_create.js	/baz/;"	v	lineno:5	namespace:base	type:number
+foo	/object_create.js	/foo/;"	v	lineno:1	namespace:base	type:number
+kaka	/object_create.js	/kaka/;"	v	lineno:7	namespace:gen2	type:number
+prop1	/object_create.js	/prop1/;"	v	lineno:30	namespace:empty	type:string
+quux	/object_create.js	/quux/;"	v	lineno:6	namespace:gen1	type:number
 
-bar		/bar/;"	v	lineno:1	namespace:base	type:number
-
-baz		/baz/;"	v	lineno:5	namespace:base	type:number
-
-quux		/quux/;"	v	lineno:6	namespace:gen1	type:number
-
-kaka		/kaka/;"	v	lineno:7	namespace:gen2	type:number
-
-prop1		/prop1/;"	v	lineno:30	namespace:empty	type:string
 ```

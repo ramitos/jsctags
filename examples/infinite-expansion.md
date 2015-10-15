@@ -1,3 +1,7 @@
+# infinite-expansion
+
+### Input file
+
 ```js
 // Issue #16
 
@@ -19,6 +23,9 @@ function goop(n) {
 };
 goop(1)(goop);
 ```
+
+### Output - JSON
+
 ```json
 [
   {
@@ -26,28 +33,33 @@ goop(1)(goop);
     "addr": "/f/",
     "kind": "f",
     "type": "void function(f)",
-    "lineno": 3
+    "lineno": 3,
+    "tagfile": "/infinite-expansion.js"
   },
   {
     "name": "x",
     "addr": "/x/",
     "kind": "v",
     "type": "[x]",
-    "lineno": 10
+    "lineno": 10,
+    "tagfile": "/infinite-expansion.js"
   },
   {
     "name": "goop",
     "addr": "/goop/",
     "kind": "f",
     "type": "fn(f: ?) function(number)",
-    "lineno": 15
+    "lineno": 15,
+    "tagfile": "/infinite-expansion.js"
   }
 ]
 ```
+
+### Output - ctags
+
 ```ctags
-f		/f/;"	f	lineno:3	type:void function(f)
+f	/infinite-expansion.js	/f/;"	f	lineno:3	type:void function(f)
+goop	/infinite-expansion.js	/goop/;"	f	lineno:15	type:fn(f: ?) function(number)
+x	/infinite-expansion.js	/x/;"	v	lineno:10	type:[x]
 
-x		/x/;"	v	lineno:10	type:[x]
-
-goop		/goop/;"	f	lineno:15	type:fn(f: ?) function(number)
 ```

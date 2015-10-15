@@ -1,3 +1,7 @@
+# generic_each
+
+### Input file
+
 ```js
 // Underscore's each function (roughly)
 var each = function(obj, iterator, context) {
@@ -20,17 +24,25 @@ each([{x: 10}], function(o) {
   this; //: String
 }, new String("x"));
 ```
+
+### Output - JSON
+
 ```json
 [
   {
     "name": "each",
     "addr": "/each/",
     "kind": "f",
-    "type": "void function(Array[each.!0.<i>], fn(o: each.!0.<i>)",
-    "lineno": 2
+    "type": "void function(Array[number]|[each.!0.<i>], fn(n: number)",
+    "lineno": 2,
+    "tagfile": "/generic_each.js"
   }
 ]
 ```
+
+### Output - ctags
+
 ```ctags
-each		/each/;"	f	lineno:2	type:void function(Array[each.!0.<i>], fn(o: each.!0.<i>)
+each	/generic_each.js	/each/;"	f	lineno:2	type:void function(Array[number]|[each.!0.<i>], fn(n: number)
+
 ```

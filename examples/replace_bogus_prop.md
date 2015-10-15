@@ -1,3 +1,7 @@
+# replace_bogus_prop
+
+### Input file
+
 ```js
 var x = new Type();
 
@@ -6,6 +10,9 @@ x.foo; //: string
 function Type() {}
 Type.prototype.foo = "hi";
 ```
+
+### Output - JSON
+
 ```json
 [
   {
@@ -13,14 +20,16 @@ Type.prototype.foo = "hi";
     "addr": "/x/",
     "kind": "v",
     "type": "+Type",
-    "lineno": 1
+    "lineno": 1,
+    "tagfile": "/replace_bogus_prop.js"
   },
   {
     "name": "Type",
     "addr": "/Type/",
     "kind": "f",
     "type": "void function()",
-    "lineno": 5
+    "lineno": 5,
+    "tagfile": "/replace_bogus_prop.js"
   },
   {
     "name": "foo",
@@ -28,14 +37,17 @@ Type.prototype.foo = "hi";
     "kind": "v",
     "type": "string",
     "lineno": 6,
-    "namespace": "Type.prototype"
+    "namespace": "Type.prototype",
+    "tagfile": "/replace_bogus_prop.js"
   }
 ]
 ```
+
+### Output - ctags
+
 ```ctags
-x		/x/;"	v	lineno:1	type:+Type
+Type	/replace_bogus_prop.js	/Type/;"	f	lineno:5	type:void function()
+foo	/replace_bogus_prop.js	/foo/;"	v	lineno:6	namespace:Type.prototype	type:string
+x	/replace_bogus_prop.js	/x/;"	v	lineno:1	type:+Type
 
-Type		/Type/;"	f	lineno:5	type:void function()
-
-foo		/foo/;"	v	lineno:6	namespace:Type.prototype	type:string
 ```

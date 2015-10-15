@@ -1,3 +1,7 @@
+# builtins
+
+### Input file
+
 ```js
 var x = Math.PI; //: number
 Math.cos(x); //: number
@@ -35,6 +39,9 @@ Array.prototype.slice.apply([1, 2, 3], [1]); //: [number]
 
 String.prototype.indexOf.bind("abcde", "a"); //: fn(from?: number) -> number
 ```
+
+### Output - JSON
+
 ```json
 [
   {
@@ -42,28 +49,33 @@ String.prototype.indexOf.bind("abcde", "a"); //: fn(from?: number) -> number
     "addr": "/x/",
     "kind": "v",
     "type": "number",
-    "lineno": 1
+    "lineno": 1,
+    "tagfile": "/builtins.js"
   },
   {
     "name": "a",
     "addr": "/a/",
     "kind": "v",
     "type": "[number]",
-    "lineno": 4
+    "lineno": 4,
+    "tagfile": "/builtins.js"
   },
   {
     "name": "num",
     "addr": "/num/",
     "kind": "v",
     "type": "+Number",
-    "lineno": 26
+    "lineno": 26,
+    "tagfile": "/builtins.js"
   }
 ]
 ```
+
+### Output - ctags
+
 ```ctags
-x		/x/;"	v	lineno:1	type:number
+a	/builtins.js	/a/;"	v	lineno:4	type:[number]
+num	/builtins.js	/num/;"	v	lineno:26	type:+Number
+x	/builtins.js	/x/;"	v	lineno:1	type:number
 
-a		/a/;"	v	lineno:4	type:[number]
-
-num		/num/;"	v	lineno:26	type:+Number
 ```

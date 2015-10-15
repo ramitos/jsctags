@@ -1,3 +1,7 @@
+# finddef
+
+### Input file
+
 ```js
 function blah() {}
 
@@ -27,6 +31,9 @@ function another(arg) {
   local; //loc: 24, 6
 }
 ```
+
+### Output - JSON
+
 ```json
 [
   {
@@ -34,14 +41,16 @@ function another(arg) {
     "addr": "/blah/",
     "kind": "f",
     "type": "void function()",
-    "lineno": 1
+    "lineno": 1,
+    "tagfile": "/finddef.js"
   },
   {
     "name": "jaja",
     "addr": "/jaja/",
     "kind": "v",
     "type": "number",
-    "lineno": 3
+    "lineno": 3,
+    "tagfile": "/finddef.js"
   },
   {
     "name": "prop1",
@@ -49,7 +58,8 @@ function another(arg) {
     "kind": "v",
     "type": "number",
     "lineno": 6,
-    "namespace": "obj"
+    "namespace": "obj",
+    "tagfile": "/finddef.js"
   },
   {
     "name": "prop2",
@@ -57,7 +67,8 @@ function another(arg) {
     "kind": "f",
     "type": "void function(?)",
     "lineno": 7,
-    "namespace": "obj"
+    "namespace": "obj",
+    "tagfile": "/finddef.js"
   },
   {
     "name": "prop3",
@@ -65,36 +76,37 @@ function another(arg) {
     "kind": "v",
     "type": "string",
     "lineno": 10,
-    "namespace": "obj"
+    "namespace": "obj",
+    "tagfile": "/finddef.js"
   },
   {
     "name": "hide",
     "addr": "/hide/",
     "kind": "f",
     "type": "fn(foo: ?) function()",
-    "lineno": 19
+    "lineno": 19,
+    "tagfile": "/finddef.js"
   },
   {
     "name": "another",
     "addr": "/another/",
     "kind": "f",
     "type": "void function(?)",
-    "lineno": 23
+    "lineno": 23,
+    "tagfile": "/finddef.js"
   }
 ]
 ```
+
+### Output - ctags
+
 ```ctags
-blah		/blah/;"	f	lineno:1	type:void function()
+another	/finddef.js	/another/;"	f	lineno:23	type:void function(?)
+blah	/finddef.js	/blah/;"	f	lineno:1	type:void function()
+hide	/finddef.js	/hide/;"	f	lineno:19	type:fn(foo: ?) function()
+jaja	/finddef.js	/jaja/;"	v	lineno:3	type:number
+prop1	/finddef.js	/prop1/;"	v	lineno:6	namespace:obj	type:number
+prop2	/finddef.js	/prop2/;"	f	lineno:7	namespace:obj	type:void function(?)
+prop3	/finddef.js	/prop3/;"	v	lineno:10	namespace:obj	type:string
 
-jaja		/jaja/;"	v	lineno:3	type:number
-
-prop1		/prop1/;"	v	lineno:6	namespace:obj	type:number
-
-prop2		/prop2/;"	f	lineno:7	namespace:obj	type:void function(?)
-
-prop3		/prop3/;"	v	lineno:10	namespace:obj	type:string
-
-hide		/hide/;"	f	lineno:19	type:fn(foo: ?) function()
-
-another		/another/;"	f	lineno:23	type:void function(?)
 ```
