@@ -1,3 +1,7 @@
+# simple_generic
+
+### Input file
+
 ```js
 function last(arr) { return arr[arr.length - 1]; }
 
@@ -13,26 +17,34 @@ function map(arr, f) {
 map([1, 2, 3], function() { return "X"; }); //: [string]
 map([1, 2, 3], function() { return true; }); //: [bool]
 ```
+
+### Output - JSON
+
 ```json
 [
   {
     "name": "last",
     "addr": "/last/",
     "kind": "f",
-    "type": "!0.<i> function(Array[string])",
-    "lineno": 1
+    "type": "!0.<i> function(Array[number]|[string])",
+    "lineno": 1,
+    "tagfile": "/simple_generic.js"
   },
   {
     "name": "map",
     "addr": "/map/",
     "kind": "f",
-    "type": "bool) -> [?] function(Array[number], fn()",
-    "lineno": 6
+    "type": "string|fn() -> bool) -> [?] function(Array[number], fn()",
+    "lineno": 6,
+    "tagfile": "/simple_generic.js"
   }
 ]
 ```
-```ctags
-last		/last/;"	f	lineno:1	type:!0.<i> function(Array[string])
 
-map		/map/;"	f	lineno:6	type:bool) -> [?] function(Array[number], fn()
+### Output - ctags
+
+```ctags
+last	/simple_generic.js	/last/;"	f	lineno:1	type:!0.<i> function(Array[number]|[string])
+map	/simple_generic.js	/map/;"	f	lineno:6	type:string|fn() -> bool) -> [?] function(Array[number], fn()
+
 ```

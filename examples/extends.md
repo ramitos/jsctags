@@ -1,3 +1,7 @@
+# extends
+
+### Input file
+
 ```js
 // Follows the pattern CoffeeScript uses to define classes.
 
@@ -60,6 +64,9 @@ elf.methodEleven(); //: string
 
 two.methodEleven; //: ?
 ```
+
+### Output - JSON
+
 ```json
 [
   {
@@ -67,14 +74,16 @@ two.methodEleven; //: ?
     "addr": "/__extends/",
     "kind": "f",
     "type": "void function(fn(arg: bool)",
-    "lineno": 3
+    "lineno": 3,
+    "tagfile": "/extends.js"
   },
   {
     "name": "Top",
     "addr": "/Top/",
     "kind": "f",
     "type": "void function()",
-    "lineno": 10
+    "lineno": 10,
+    "tagfile": "/extends.js"
   },
   {
     "name": "topMethod",
@@ -82,7 +91,8 @@ two.methodEleven; //: ?
     "kind": "f",
     "type": "string function()",
     "lineno": 12,
-    "namespace": "Top.prototype"
+    "namespace": "Top.prototype",
+    "tagfile": "/extends.js"
   },
   {
     "name": "topStatic",
@@ -90,14 +100,16 @@ two.methodEleven; //: ?
     "kind": "v",
     "type": "number",
     "lineno": 13,
-    "namespace": "Top"
+    "namespace": "Top",
+    "tagfile": "/extends.js"
   },
   {
     "name": "SubOne",
     "addr": "/SubOne/",
     "kind": "f",
     "type": "void function(bool)",
-    "lineno": 17
+    "lineno": 17,
+    "tagfile": "/extends.js"
   },
   {
     "name": "argOne",
@@ -105,7 +117,8 @@ two.methodEleven; //: ?
     "kind": "v",
     "type": "boolean",
     "lineno": 18,
-    "namespace": "SubOne"
+    "namespace": "SubOne",
+    "tagfile": "/extends.js"
   },
   {
     "name": "argOne",
@@ -113,7 +126,8 @@ two.methodEleven; //: ?
     "kind": "v",
     "type": "boolean",
     "lineno": 18,
-    "namespace": "SubEleven"
+    "namespace": "SubEleven",
+    "tagfile": "/extends.js"
   },
   {
     "name": "methodOne",
@@ -121,14 +135,16 @@ two.methodEleven; //: ?
     "kind": "f",
     "type": "number function()",
     "lineno": 20,
-    "namespace": "SubOne.prototype"
+    "namespace": "SubOne.prototype",
+    "tagfile": "/extends.js"
   },
   {
     "name": "SubTwo",
     "addr": "/SubTwo/",
     "kind": "f",
     "type": "void function(bool)",
-    "lineno": 24
+    "lineno": 24,
+    "tagfile": "/extends.js"
   },
   {
     "name": "argTwo",
@@ -136,7 +152,8 @@ two.methodEleven; //: ?
     "kind": "v",
     "type": "boolean",
     "lineno": 25,
-    "namespace": "SubTwo"
+    "namespace": "SubTwo",
+    "tagfile": "/extends.js"
   },
   {
     "name": "methodTwo",
@@ -144,14 +161,16 @@ two.methodEleven; //: ?
     "kind": "f",
     "type": "void function()",
     "lineno": 27,
-    "namespace": "SubTwo.prototype"
+    "namespace": "SubTwo.prototype",
+    "tagfile": "/extends.js"
   },
   {
     "name": "SubEleven",
     "addr": "/SubEleven/",
     "kind": "f",
     "type": "void function(bool)",
-    "lineno": 31
+    "lineno": 31,
+    "tagfile": "/extends.js"
   },
   {
     "name": "methodEleven",
@@ -159,61 +178,54 @@ two.methodEleven; //: ?
     "kind": "f",
     "type": "string function()",
     "lineno": 34,
-    "namespace": "SubEleven.prototype"
+    "namespace": "SubEleven.prototype",
+    "tagfile": "/extends.js"
   },
   {
     "name": "one",
     "addr": "/one/",
     "kind": "v",
     "type": "+SubOne",
-    "lineno": 38
+    "lineno": 38,
+    "tagfile": "/extends.js"
   },
   {
     "name": "two",
     "addr": "/two/",
     "kind": "v",
     "type": "+SubTwo",
-    "lineno": 38
+    "lineno": 38,
+    "tagfile": "/extends.js"
   },
   {
     "name": "elf",
     "addr": "/elf/",
     "kind": "v",
     "type": "+SubEleven",
-    "lineno": 38
+    "lineno": 38,
+    "tagfile": "/extends.js"
   }
 ]
 ```
+
+### Output - ctags
+
 ```ctags
-__extends		/__extends/;"	f	lineno:3	type:void function(fn(arg: bool)
+SubEleven	/extends.js	/SubEleven/;"	f	lineno:31	type:void function(bool)
+SubOne	/extends.js	/SubOne/;"	f	lineno:17	type:void function(bool)
+SubTwo	/extends.js	/SubTwo/;"	f	lineno:24	type:void function(bool)
+Top	/extends.js	/Top/;"	f	lineno:10	type:void function()
+__extends	/extends.js	/__extends/;"	f	lineno:3	type:void function(fn(arg: bool)
+argOne	/extends.js	/argOne/;"	v	lineno:18	namespace:SubEleven	type:boolean
+argOne	/extends.js	/argOne/;"	v	lineno:18	namespace:SubOne	type:boolean
+argTwo	/extends.js	/argTwo/;"	v	lineno:25	namespace:SubTwo	type:boolean
+elf	/extends.js	/elf/;"	v	lineno:38	type:+SubEleven
+methodEleven	/extends.js	/methodEleven/;"	f	lineno:34	namespace:SubEleven.prototype	type:string function()
+methodOne	/extends.js	/methodOne/;"	f	lineno:20	namespace:SubOne.prototype	type:number function()
+methodTwo	/extends.js	/methodTwo/;"	f	lineno:27	namespace:SubTwo.prototype	type:void function()
+one	/extends.js	/one/;"	v	lineno:38	type:+SubOne
+topMethod	/extends.js	/topMethod/;"	f	lineno:12	namespace:Top.prototype	type:string function()
+topStatic	/extends.js	/topStatic/;"	v	lineno:13	namespace:Top	type:number
+two	/extends.js	/two/;"	v	lineno:38	type:+SubTwo
 
-Top		/Top/;"	f	lineno:10	type:void function()
-
-topMethod		/topMethod/;"	f	lineno:12	namespace:Top.prototype	type:string function()
-
-topStatic		/topStatic/;"	v	lineno:13	namespace:Top	type:number
-
-SubOne		/SubOne/;"	f	lineno:17	type:void function(bool)
-
-argOne		/argOne/;"	v	lineno:18	namespace:SubOne	type:boolean
-
-argOne		/argOne/;"	v	lineno:18	namespace:SubEleven	type:boolean
-
-methodOne		/methodOne/;"	f	lineno:20	namespace:SubOne.prototype	type:number function()
-
-SubTwo		/SubTwo/;"	f	lineno:24	type:void function(bool)
-
-argTwo		/argTwo/;"	v	lineno:25	namespace:SubTwo	type:boolean
-
-methodTwo		/methodTwo/;"	f	lineno:27	namespace:SubTwo.prototype	type:void function()
-
-SubEleven		/SubEleven/;"	f	lineno:31	type:void function(bool)
-
-methodEleven		/methodEleven/;"	f	lineno:34	namespace:SubEleven.prototype	type:string function()
-
-one		/one/;"	v	lineno:38	type:+SubOne
-
-two		/two/;"	v	lineno:38	type:+SubTwo
-
-elf		/elf/;"	v	lineno:38	type:+SubEleven
 ```

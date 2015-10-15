@@ -1,3 +1,7 @@
+# autothis
+
+### Input file
+
 ```js
 function Bar() { this.prop = 10; }
 Bar.prototype.hallo = function() {
@@ -12,6 +16,9 @@ Bar.prototype.fn2 = function() {
 Date.prototype.fn2 = Bar.prototype.fn2;
 new Date().fn2();
 ```
+
+### Output - JSON
+
 ```json
 [
   {
@@ -19,7 +26,8 @@ new Date().fn2();
     "addr": "/Bar/",
     "kind": "f",
     "type": "void function()",
-    "lineno": 1
+    "lineno": 1,
+    "tagfile": "/autothis.js"
   },
   {
     "name": "hallo",
@@ -27,7 +35,8 @@ new Date().fn2();
     "kind": "f",
     "type": "void function()",
     "lineno": 2,
-    "namespace": "Bar.prototype"
+    "namespace": "Bar.prototype",
+    "tagfile": "/autothis.js"
   },
   {
     "name": "fn2",
@@ -35,14 +44,17 @@ new Date().fn2();
     "kind": "f",
     "type": "void function()",
     "lineno": 11,
-    "namespace": "Date.prototype"
+    "namespace": "Date.prototype",
+    "tagfile": "/autothis.js"
   }
 ]
 ```
+
+### Output - ctags
+
 ```ctags
-Bar		/Bar/;"	f	lineno:1	type:void function()
+Bar	/autothis.js	/Bar/;"	f	lineno:1	type:void function()
+fn2	/autothis.js	/fn2/;"	f	lineno:11	namespace:Date.prototype	type:void function()
+hallo	/autothis.js	/hallo/;"	f	lineno:2	namespace:Bar.prototype	type:void function()
 
-hallo		/hallo/;"	f	lineno:2	namespace:Bar.prototype	type:void function()
-
-fn2		/fn2/;"	f	lineno:11	namespace:Date.prototype	type:void function()
 ```

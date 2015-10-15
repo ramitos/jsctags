@@ -1,3 +1,7 @@
+# copyprops
+
+### Input file
+
 ```js
 function buildCopy(o) {
   var oo = {};
@@ -7,6 +11,9 @@ function buildCopy(o) {
 
 buildCopy({xx: 10, yy: 20}); //:: {xx: number, yy: number}
 ```
+
+### Output - JSON
+
 ```json
 [
   {
@@ -14,10 +21,15 @@ buildCopy({xx: 10, yy: 20}); //:: {xx: number, yy: number}
     "addr": "/buildCopy/",
     "kind": "f",
     "type": "? function(buildCopy.!0)",
-    "lineno": 1
+    "lineno": 1,
+    "tagfile": "/copyprops.js"
   }
 ]
 ```
+
+### Output - ctags
+
 ```ctags
-buildCopy		/buildCopy/;"	f	lineno:1	type:? function(buildCopy.!0)
+buildCopy	/copyprops.js	/buildCopy/;"	f	lineno:1	type:? function(buildCopy.!0)
+
 ```

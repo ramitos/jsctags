@@ -1,3 +1,7 @@
+# fn_arguments
+
+### Input file
+
 ```js
 function abc() {
   return arguments[1];
@@ -5,6 +9,9 @@ function abc() {
 
 abc(1, 2, 3); //: number
 ```
+
+### Output - JSON
+
 ```json
 [
   {
@@ -12,10 +19,15 @@ abc(1, 2, 3); //: number
     "addr": "/abc/",
     "kind": "f",
     "type": "number function()",
-    "lineno": 1
+    "lineno": 1,
+    "tagfile": "/fn_arguments.js"
   }
 ]
 ```
+
+### Output - ctags
+
 ```ctags
-abc		/abc/;"	f	lineno:1	type:number function()
+abc	/fn_arguments.js	/abc/;"	f	lineno:1	type:number function()
+
 ```

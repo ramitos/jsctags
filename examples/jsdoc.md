@@ -1,3 +1,7 @@
+# jsdoc
+
+### Input file
+
 ```js
 /** @type {Date} */
 var a = getSomething();
@@ -42,46 +46,73 @@ o.prop1; //: string
 o.prop2; //: fn() -> number
 o.prop3; //: fn() -> string
 ```
+
+### Output - JSON
+
 ```json
 [
+  {
+    "name": "a",
+    "addr": "/a/",
+    "kind": "v",
+    "type": "+Date",
+    "lineno": 2,
+    "tagfile": "/jsdoc.js"
+  },
   {
     "name": "foo",
     "addr": "/foo/",
     "kind": "f",
-    "type": "void function(?, ?)",
-    "lineno": 17
+    "type": "Array function(number, string)",
+    "lineno": 17,
+    "tagfile": "/jsdoc.js"
   },
   {
     "name": "bar",
     "addr": "/bar/",
     "kind": "f",
-    "type": "void function(?, number)",
-    "lineno": 25
+    "type": "string function(number, number)",
+    "lineno": 25,
+    "tagfile": "/jsdoc.js"
+  },
+  {
+    "name": "prop1",
+    "addr": "/prop1/",
+    "kind": "v",
+    "type": "string",
+    "lineno": 31,
+    "namespace": "o",
+    "tagfile": "/jsdoc.js"
   },
   {
     "name": "prop2",
     "addr": "/prop2/",
     "kind": "f",
-    "type": "void function()",
+    "type": "number function()",
     "lineno": 34,
-    "namespace": "o"
+    "namespace": "o",
+    "tagfile": "/jsdoc.js"
   },
   {
     "name": "prop3",
     "addr": "/prop3/",
     "kind": "f",
-    "type": "void function()",
+    "type": "string function()",
     "lineno": 38,
-    "namespace": "o"
+    "namespace": "o",
+    "tagfile": "/jsdoc.js"
   }
 ]
 ```
+
+### Output - ctags
+
 ```ctags
-foo		/foo/;"	f	lineno:17	type:void function(?, ?)
+a	/jsdoc.js	/a/;"	v	lineno:2	type:+Date
+bar	/jsdoc.js	/bar/;"	f	lineno:25	type:string function(number, number)
+foo	/jsdoc.js	/foo/;"	f	lineno:17	type:Array function(number, string)
+prop1	/jsdoc.js	/prop1/;"	v	lineno:31	namespace:o	type:string
+prop2	/jsdoc.js	/prop2/;"	f	lineno:34	namespace:o	type:number function()
+prop3	/jsdoc.js	/prop3/;"	f	lineno:38	namespace:o	type:string function()
 
-bar		/bar/;"	f	lineno:25	type:void function(?, number)
-
-prop2		/prop2/;"	f	lineno:34	namespace:o	type:void function()
-
-prop3		/prop3/;"	f	lineno:38	namespace:o	type:void function()
 ```
