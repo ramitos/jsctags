@@ -24,6 +24,7 @@ var file = (function () {
 
 if(!argv._.length) {
   var content = ''
+  var tagsContent = ''
 
   process.stdin.resume()
 
@@ -38,10 +39,15 @@ if(!argv._.length) {
       tags.forEach(function (tag) {
         tag.tagfile = file
       })
-	  if (argv.f) {
-        console.log(jsctags.ctags(tags).sort().join(''))
+      if (argv.f) {
+        tagsContent = jsctags.ctags(tags).sort().join('')
       } else {
-        console.log(JSON.stringify(tags, null, 2))
+        tagsContent = JSON.stringify(tags, null, 2)
+      }
+      if(argv.o) {
+        fs.writeFileSync(argv.o, tagsContent)
+      } else {
+        console.log(tagsContent)
       }
     })
   })
@@ -60,13 +66,19 @@ if(!argv._.length) {
       })
     })
   }, function (e, results) {
+    var tagsContent
     if(e) throw e
     if(argv.f) {
       var ctags = Array.prototype.concat.apply([], results.map(jsctags.ctags))
-      console.log(ctags.sort().join(''))
+      tagsContent = ctags.sort().join('')
     } else {
       var tags = Array.prototype.concat.apply([], results)
-      console.log(JSON.stringify(tags, null, 2))
+      tagsContent = JSON.stringify(tags, null, 2)
+    }
+    if(argv.o) {
+      fs.writeFileSync(argv.o, tagsContent)
+    } else {
+      console.log(tagsContent)
     }
   })
 }

@@ -21,11 +21,11 @@ dev-dependencies:
 ## usage
 
 ```sh
-$ jsctags [--dir=/path/to] /path/to/file.js [-f]
+$ jsctags [-o=/path/to/output/file] [--dir=/path/to] /path/to/file.js [-f]
 ```
 
 ```sh
-$ cat /path/to/file.js | jsctags [--dir=/path/to] [--file=/path/to/file.js] [-f]
+$ cat /path/to/file.js | jsctags [-o=/path/to/output/file] [--dir=/path/to] [--file=/path/to/file.js] [-f]
 ```
 
 By default, `jsctags` will output a JSON file. Use the `-f` flag to output an exuberant ctags-compatible file.
