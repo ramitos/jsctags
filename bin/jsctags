@@ -83,13 +83,19 @@ program
     }
 
     // Convert to ctags format
-    const ctags = results.map(tags => {
+    let ctags = results.map(tags => {
       return jsctags.ctags(tags, {args:false , local: false})
     }).sort()
 
+    // flatten
+    ctags = [].concat.apply([], ctags)
+
+    // Convert to string
+    ctags = ctags.join('')
+
     // Output
     if (program.F === '-') {
-      console.log(ctags.join(''));
+        console.log(ctags)
     } else {
       fs.writeFile('tags', ctags, err => {
         if(err) {

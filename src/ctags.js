@@ -20,8 +20,8 @@ var SPECIAL_FIELDS = {
 module.exports = function (tags, options) {
   if (!options) {
     options = {
-      args: true,
-      local: true
+      args: false,
+      local: false
     }
   }
   return tags.filter(tag => {
