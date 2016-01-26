@@ -1,56 +1,70 @@
 #!/usr/bin/env node
+'use strict'
 
-var format = require('util').format;
-var argv = require('optimist').argv;
 var jsctags = require('../');
 var path = require('path');
-var collect = require('collect-stream');
 var async = require('async');
 var fs = require('fs');
+var diveSync = require('diveSync')
+var program = require('commander');
+var globToRegexp = require('glob-to-regexp');
 
-var dir = (function () {
-  if (argv.dir) {
-    return path.resolve(argv.dir);
+const glob = pattern => globToRegexp(pattern, {flags: 'i'})
+
+// Process `exclude` arg
+function exclude(patterns) {
+  return patterns.split(',').map(pattern => glob(pattern))
+}
+
+program
+.arguments('<file> [others...]')
+.option('-R, --recurse', 'Recurse into directories')
+.option('--exclude  <patterns>', 'Comma separated list of exclusion patterns. Exclude files and directories matching one of the `patterns`.', exclude)
+.option('-f <name>', 'Write tags to specified file. Value of "-" writes tags to stdout ["tags"; or "TAGS" when -e supplied].')
+.option('--extension <extension>', 'File extension to look for. Default is `.js`', 'js')
+.action((file, others) => {
+  const projectDir = path.resolve('.')
+
+  // Filtering
+  const extension = new RegExp(`.*\.${program.extension}$`)
+  // Always exclude `node_modules` and '.git' folders
+  var patterns = [glob('*/node_modules/*'), glob('*/.git/*')]
+  if (program.exclude) {
+    patterns = patterns.concat(program.exclude)
   }
-
-  if (argv.file) {
-    return path.dirname(argv.file);
-  }
-
-  if (argv._.length) {
-    return path.dirname(argv._[0]);
-  }
-
-  return '///null';
-})();
-
-var file = (function () {
-  if (argv.file) {
-    return path.resolve(process.cwd(), argv.file);
-  }
-
-  if (argv._.length) {
-    return argv._.map(function (file) {
-      return path.resolve(process.cwd(), file);
-    });
-  }
-
-  return format('///null/%s', Math.floor(Math.random() * 100));
-})();
-
-if (!argv._.length) {
-  collect(process.stdin, function (err, content) {
-    if (err) {
-      throw err;
+  function filter(path, dir) {
+    if (!dir && !extension.test(path)) {
+      return false
     }
+    return patterns.every(pattern => !pattern.test(path))
+  }
 
-    if (Buffer.isBuffer(content)) {
-      content = content.toString();
+  // Resolve files
+  const files = []
+  const items = others.concat(file).map(item => path.resolve(item))
+  items.forEach(item => {
+    if (fs.statSync(item).isDirectory()) {
+      diveSync(
+        item,
+        {recursive: program.recurse, filter: filter },
+        (err, file) => {
+          files.push(file)
+        })
+    } else {
+      if (!filter(file, false)) {
+        files.push(file)
+      }
     }
+  })
 
+  // Process each file
+  async.map(files, (file, callback) => {
+    const content = fs.readFileSync(file, 'utf8')
+
+    // Generate tags
     jsctags({
       file: file,
-      dir: dir,
+      dir: projectDir,
       content: content
     }, function (err, tags) {
       if (err) {
@@ -61,50 +75,28 @@ if (!argv._.length) {
       tags.forEach(function (tag) {
         tag.tagfile = file;
       });
-
-      if (argv.f) {
-        console.log(jsctags.ctags(tags).join(''));
-      } else {
-        console.log(JSON.stringify(tags, null, 2));
-      }
-    });
-  });
-} else {
-  var files = Array.isArray(file) ? file : [file];
-  async.map(files, function (file, callback) {
-    fs.readFile(file, 'utf8', function (err, content) {
-      if (err) {
-        return callback(err);
-      }
-
-      jsctags({
-        file: file,
-        dir: dir,
-        content: content
-      }, function (err, tags) {
-        if (err) {
-          throw err;
-        }
-
-        tags.tagfile = file;
-        tags.forEach(function (tag) {
-          tag.tagfile = file;
-        });
-
         callback(null, tags);
-      });
     });
-  }, function (err, results) {
+  }, (err, results) => {
     if (err) {
       throw err;
     }
 
-    if (argv.f) {
-      var ctags = Array.prototype.concat.apply([], results.map(jsctags.ctags));
+    // Convert to ctags format
+    const ctags = results.map(tags => {
+      return jsctags.ctags(tags, {args:false , local: false})
+    }).sort()
+
+    // Output
+    if (program.F === '-') {
       console.log(ctags.join(''));
     } else {
-      var tags = Array.prototype.concat.apply([], results);
-      console.log(JSON.stringify(tags, null, 2));
+      fs.writeFile('tags', ctags, err => {
+        if(err) {
+          throw err
+        }
+      })
     }
-  });
-}
+  })
+})
+.parse(process.argv);
