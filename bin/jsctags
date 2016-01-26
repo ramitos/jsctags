@@ -20,7 +20,7 @@ program
 .arguments('<file> [others...]')
 .option('-R, --recurse', 'Recurse into directories')
 .option('--exclude  <patterns>', 'Comma separated list of exclusion patterns. Exclude files and directories matching one of the `patterns`.', exclude)
-.option('-f <name>', 'Write tags to specified file. Value of "-" writes tags to stdout ["tags"; or "TAGS" when -e supplied].')
+.option('-f <name>', 'Write tags to specified file. Value of "-" writes tags to stdout ["tags"; or "TAGS" when -e supplied].', 'tags')
 .option('--extension <extension>', 'File extension to look for. Default is `.js`', 'js')
 .action((file, others) => {
   const projectDir = path.resolve('.')
@@ -97,7 +97,7 @@ program
     if (program.F === '-') {
         console.log(ctags)
     } else {
-      fs.writeFile('tags', ctags, err => {
+      fs.writeFile(program.F, ctags, err => {
         if(err) {
           throw err
         }
