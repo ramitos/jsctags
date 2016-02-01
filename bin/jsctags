@@ -19,6 +19,7 @@ function exclude(patterns) {
 program
 .arguments('<file> [others...]')
 .option('-R, --recurse', 'Recurse into directories')
+.option('-a, --append', 'Append the tags to an existing tag file.')
 .option('--exclude  <patterns>', 'Comma separated list of exclusion patterns. Exclude files and directories matching one of the `patterns`.', exclude)
 .option('-f <name>', 'Write tags to specified file. Value of "-" writes tags to stdout ["tags"; or "TAGS" when -e supplied].', 'tags')
 .option('--extension <extension>', 'File extension to look for. Default is `.js`', 'js')
@@ -34,25 +35,29 @@ program
   }
   function filter(path, dir) {
     if (!dir && !extension.test(path)) {
-      return false
+      return true
     }
-    return patterns.every(pattern => !pattern.test(path))
+    return patterns.some(pattern => pattern.test(path))
   }
 
   // Resolve files
   const files = []
-  const items = others.concat(file).map(item => path.resolve(item))
+  others.push(file)
+  let items = others.map(other => other.replace(/\"/g, ''))
+  items = items.map(item => path.resolve(item))
   items.forEach(item => {
     if (fs.statSync(item).isDirectory()) {
-      diveSync(
-        item,
-        {recursive: program.recurse, filter: filter },
-        (err, file) => {
-          files.push(file)
-        })
+      if (program.recurse) {
+        diveSync(
+          item,
+          {recursive: program.recurse, filter: (path, dir) => !filter(path, dir) },
+          (err, file) => {
+            files.push(file)
+          })
+      }
     } else {
-      if (!filter(file, false)) {
-        files.push(file)
+      if (!filter(item, false)) {
+        files.push(item)
       }
     }
   })
@@ -85,10 +90,33 @@ program
     // Convert to ctags format
     let ctags = results.map(tags => {
       return jsctags.ctags(tags, {args:false , local: false})
-    }).sort()
+    })
 
     // flatten
     ctags = [].concat.apply([], ctags)
+
+    // Append
+    if (program.append) {
+      let previous = ''
+      try {
+        previous = fs.readFileSync(program.F, {encoding: 'utf8'})
+      } catch (e) {
+        if (e.code !== 'ENOENT') {
+          throw e;
+        } //   // but you also get any other error
+      }
+      // split on new lines/carriage returns
+      previous = previous.split(/\r\n|\r|\n/g);
+      // remove empty lines
+      previous = previous.filter(line => line !== '')
+      // add new line
+      previous = previous.map(line => `${line}\n`)
+      // merge with parsed ctags
+      ctags = previous.concat(ctags)
+    }
+
+    // Sort
+    ctags = ctags.sort()
 
     // Convert to string
     ctags = ctags.join('')
@@ -97,12 +125,13 @@ program
     if (program.F === '-') {
         console.log(ctags)
     } else {
-      fs.writeFile(program.F, ctags, err => {
-        if(err) {
-          throw err
-        }
-      })
+      fs.writeFileSync(program.F, ctags)
     }
   })
 })
 .parse(process.argv);
+
+if (program.args.length === 0) {
+  console.log('jsctags: No files specified. Try "jsctags --help".')
+}
+
