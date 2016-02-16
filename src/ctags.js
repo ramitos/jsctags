@@ -17,21 +17,8 @@ var SPECIAL_FIELDS = {
   parent: true
 };
 
-module.exports = function (tags, options) {
-  if (!options) {
-    options = {
-      args: false,
-      local: false
-    }
-  }
-  return tags.filter(tag => {
-    if (tag.origin['!data'].isArg && !options.args) {
-      return false
-    } else if ((tag.namespace !== undefined) && !options.local) {
-      return false
-    }
-    return true
-  }).map(tag => {
+module.exports = function (tags) {
+  return tags.map(tag => {
     var buf = [tag.name, '\t', tags.tagfile, '\t'];
     buf.push(tag.addr !== undefined ? tag.addr : '//');
     var tagfields = [];

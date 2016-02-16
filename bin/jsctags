@@ -1,13 +1,15 @@
-#!/usr/bin/env node
-'use strict'
+#!/usr/bin/env node --use_strict
 
-var jsctags = require('../');
-var path = require('path');
-var async = require('async');
-var fs = require('fs');
-var diveSync = require('diveSync')
-var program = require('commander');
-var globToRegexp = require('glob-to-regexp');
+const jsctags = require('../')
+const path = require('path')
+const async = require('async')
+const fs = require('fs')
+const diveSync = require('diveSync')
+const program = require('commander')
+const globToRegexp = require('glob-to-regexp')
+
+const tern = require('tern')
+const condense = require('tern/lib/condense')
 
 const glob = pattern => globToRegexp(pattern, {flags: 'i'})
 
@@ -16,28 +18,60 @@ function exclude(patterns) {
   return patterns.split(',').map(pattern => glob(pattern))
 }
 
+
+function condense_(filepath, callback) {
+  const server = new tern.Server({
+    projectDir: path.resolve(__dirname, '../node_modules/tern'),
+    getFile(name) {
+      return fs.readFileSync(path.resolve(name), 'utf8')
+    },
+  })
+
+  server.addFile(filepath)
+
+  server.flush(function (err) {
+    if (err) {
+      callback(err)
+    }
+
+    const result = condense.condense(
+      [filepath],
+      null,
+      {sortOutput: true, spans: true}
+    )
+    callback(null, result, null, 2)
+  })
+}
+
 program
 .arguments('<file> [others...]')
 .option('-R, --recurse', 'Recurse into directories')
 .option('-a, --append', 'Append the tags to an existing tag file.')
-.option('--exclude  <patterns>', 'Comma separated list of exclusion patterns. Exclude files and directories matching one of the `patterns`.', exclude)
-.option('-f <name>', 'Write tags to specified file. Value of "-" writes tags to stdout ["tags"; or "TAGS" when -e supplied].', 'tags')
+.option(
+  '--exclude  <patterns>',
+  'Comma separated list of exclusion patterns. Exclude files and ' +
+  'directories matching one of the `patterns`.',
+  exclude
+)
+.option(
+  '-f <name>', 'Write tags to specified file. Value of "-" writes tags ' +
+  'to stdout ["tags"; or "TAGS" when -e supplied].',
+  'tags'
+)
 .option('--extension <extension>', 'File extension to look for. Default is `.js`', 'js')
 .action((file, others) => {
-  const projectDir = path.resolve('.')
-
   // Filtering
   const extension = new RegExp(`.*\.${program.extension}$`)
   // Always exclude `node_modules` and '.git' folders
-  var patterns = [glob('*/node_modules/*'), glob('*/.git/*')]
+  const patterns = [glob('*/node_modules/*'), glob('*/.git/*')]
   if (program.exclude) {
     patterns = patterns.concat(program.exclude)
   }
-  function filter(path, dir) {
-    if (!dir && !extension.test(path)) {
+  function filter(filepath, dir) {
+    if (!dir && !extension.test(filepath)) {
       return true
     }
-    return patterns.some(pattern => pattern.test(path))
+    return patterns.some(pattern => pattern.test(filepath))
   }
 
   // Resolve files
@@ -50,46 +84,42 @@ program
       if (program.recurse) {
         diveSync(
           item,
-          {recursive: program.recurse, filter: (path, dir) => !filter(path, dir) },
-          (err, file) => {
-            files.push(file)
+          {recursive: program.recurse, filter: (filepath, dir) => !filter(filepath, dir)},
+          (err, filepath) => {
+            files.push(filepath)
           })
       }
-    } else {
-      if (!filter(item, false)) {
-        files.push(item)
-      }
+    } else if (!filter(item, false)) {
+      files.push(item)
     }
   })
 
   // Process each file
-  async.map(files, (file, callback) => {
-    const content = fs.readFileSync(file, 'utf8')
+  async.map(files, (filepath, callback) => {
+    condense_(filepath, (error, result) => {
+      const content = fs.readFileSync(filepath, 'utf8')
 
-    // Generate tags
-    jsctags({
-      file: file,
-      dir: projectDir,
-      content: content
-    }, function (err, tags) {
-      if (err) {
-        throw err;
-      }
-
-      tags.tagfile = file;
-      tags.forEach(function (tag) {
-        tag.tagfile = file;
-      });
-        callback(null, tags);
-    });
+      // Generate tags
+      jsctags({
+        condense: result,
+        content,
+      }, (err, tags) => {
+        tags.tagfile = filepath
+        tags.forEach(function (tag) {
+          tag.tagfile = filepath
+        })
+        callback(null, tags)
+      })
+    })
   }, (err, results) => {
+    // console.log('results', results)
     if (err) {
-      throw err;
+      throw err
     }
 
     // Convert to ctags format
     let ctags = results.map(tags => {
-      return jsctags.ctags(tags, {args:false , local: false})
+      return jsctags.ctags(tags, {args: false, local: false})
     })
 
     // flatten
@@ -102,11 +132,11 @@ program
         previous = fs.readFileSync(program.F, {encoding: 'utf8'})
       } catch (e) {
         if (e.code !== 'ENOENT') {
-          throw e;
-        } //   // but you also get any other error
+          throw e
+        }
       }
       // split on new lines/carriage returns
-      previous = previous.split(/\r\n|\r|\n/g);
+      previous = previous.split(/\r\n|\r|\n/g)
       // remove empty lines
       previous = previous.filter(line => line !== '')
       // add new line
@@ -123,15 +153,14 @@ program
 
     // Output
     if (program.F === '-') {
-        console.log(ctags)
+      console.log(ctags)
     } else {
       fs.writeFileSync(program.F, ctags)
     }
   })
 })
-.parse(process.argv);
+.parse(process.argv)
 
 if (program.args.length === 0) {
   console.log('jsctags: No files specified. Try "jsctags --help".')
 }
-
