@@ -1,6 +1,5 @@
 #!/usr/bin/env node --use_strict
 
-const jsctags = require('../')
 const path = require('path')
 const async = require('async')
 const fs = require('fs')
@@ -8,39 +7,14 @@ const diveSync = require('diveSync')
 const program = require('commander')
 const globToRegexp = require('glob-to-regexp')
 
-const tern = require('tern')
-const condense = require('tern/lib/condense')
+const jsctags = require('../')
+const condense = require('../src/tern-server')
 
 const glob = pattern => globToRegexp(pattern, {flags: 'i'})
 
 // Process `exclude` arg
 function exclude(patterns) {
   return patterns.split(',').map(pattern => glob(pattern))
-}
-
-
-function condense_(filepath, callback) {
-  const server = new tern.Server({
-    projectDir: path.resolve(__dirname, '../node_modules/tern'),
-    getFile(name) {
-      return fs.readFileSync(path.resolve(name), 'utf8')
-    },
-  })
-
-  server.addFile(filepath)
-
-  server.flush(function (err) {
-    if (err) {
-      callback(err)
-    }
-
-    const result = condense.condense(
-      [filepath],
-      null,
-      {sortOutput: true, spans: true}
-    )
-    callback(null, result, null, 2)
-  })
 }
 
 program
@@ -96,7 +70,7 @@ program
 
   // Process each file
   async.map(files, (filepath, callback) => {
-    condense_(filepath, (error, result) => {
+    condense(filepath, (error, result) => {
       const content = fs.readFileSync(filepath, 'utf8')
 
       // Generate tags
