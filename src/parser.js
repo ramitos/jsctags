@@ -12,8 +12,6 @@ var objectHash = require('object-hash');
 var clone = require('lodash.clonedeep');
 var uuid = require('node-uuid');
 
-var condense = require('./condenser');
-
 const MATCHES = {
   pos: /^(\d*?)\[\d*?\:\d*?\]-(\d*?)\[\d*?\:\d*?\]$/,
   addr: /[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g,
@@ -91,15 +89,7 @@ Parser.prototype.parse = function (fn) {
   if (Object.keys(self.condense).length) {
     return self.hasCondense(fn);
   }
-
-  condense(self.ctx, function (err, condense) {
-    if (err) {
-      return fn(err);
-    }
-
-    self.condense = condense;
-    self.hasCondense(fn);
-  });
+  return ''
 };
 
 Parser.prototype.hasCondense = function (fn) {
