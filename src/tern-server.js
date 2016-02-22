@@ -7,14 +7,12 @@ const tern = require('tern')
 const condense = require('tern/lib/condense')
 
 module.exports = function condense_(filepath, callback) {
-  const server = new tern.Server({
-    projectDir: path.resolve(__dirname, '../node_modules/tern'),
-    getFile(name) {
-      return fs.readFileSync(path.resolve(name), 'utf8')
-    },
-  })
+  const server = new tern.Server({})
 
-  server.addFile(filepath)
+  server.addFile(
+    'name',
+    fs.readFileSync(path.resolve(filepath), 'utf8')
+  )
 
   server.flush(function (err) {
     if (err) {
@@ -22,7 +20,7 @@ module.exports = function condense_(filepath, callback) {
     }
 
     const result = condense.condense(
-      [filepath],
+      ['name'],
       null,
       {sortOutput: true, spans: true}
     )
