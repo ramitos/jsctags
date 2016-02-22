@@ -1,6 +1,8 @@
 {
-  "libs": ["ecma5", "ecma6"],
+  "libs": [
+  ],
   "plugins": {
-    "node": {}
+    "node": {},
+    "complete_strings": {}
   }
 }
