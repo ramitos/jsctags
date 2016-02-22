@@ -1,18 +1,322 @@
-var format = require('util').format;
-var isString = require('is-string');
-var includes = require('lodash.includes');
-var isUndefined = require('lodash.isundefined');
-var isObject = require('lodash.isplainobject');
-var isArray = require('lodash.isarray');
-var isFunction = require('lodash.isfunction');
-var sortBy = require('lodash.sortby');
-var without = require('lodash.without');
-var get = require('lodash.get');
-var objectHash = require('object-hash');
-var clone = require('lodash.clonedeep');
-var uuid = require('node-uuid');
+const format = require('util').format
+const isString = require('is-string')
+const includes = require('lodash.includes')
+const isUndefined = require('lodash.isundefined')
+const isObject = require('lodash.isplainobject')
+const isArray = require('lodash.isarray')
+const isFunction = require('lodash.isfunction')
+const sortBy = require('lodash.sortby')
+const without = require('lodash.without')
+const get = require('lodash.get')
+const objectHash = require('object-hash')
+const clone = require('lodash.clonedeep')
+const uuid = require('node-uuid')
 
-const MATCHES = {
+
+class Parser {
+  constructor(ctx) {
+    this.ctx = ctx
+    this.condense = ctx.condense || {}
+    this.tags = []
+    this.define = {}
+    this.walked = []
+    this.bySpan = {}
+  }
+
+  parse(callback) {
+    const that = this
+
+    if (Object.keys(that.condense).length) {
+      return that.hasCondense(callback)
+    }
+    return ''
+  }
+
+  hasCondense(callback) {
+    if (this.condense['!define']) {
+      this.define = this.condense['!define']
+    }
+
+    this.fromTree(this.condense)
+
+    this.clean()
+
+    this.tags = this.tags.sort(function (a, b) {
+      return a.lineno - b.lineno
+    })
+
+    callback(null, this.tags)
+  }
+
+  clean() {
+    if (!this.ctx.clean) {
+      return
+    }
+
+    const onSpan = function (span) {
+      const tags = this.bySpan[span]
+
+      if (tags.length < 2) {
+        return
+      }
+
+      this.tags = without(this.tags, sortBy(tags, function (tag) {
+        return (tag.namespace || '').split(/\./).length
+      }).pop())
+    }
+
+    Object.keys(this.bySpan).forEach(onSpan, this)
+  }
+
+  fromTree(tree, parent) {
+    if (!isObject(tree)) {
+      return null
+    }
+
+    return Object.keys(tree).filter(function (key) {
+      return !(/^!/.test(key))
+    }).map(function (name) {
+      return this.onNode(name, tree[name], parent)
+    }, this)
+  }
+
+  namespace(node, parent) {
+    if (!parent) {
+      return null
+    }
+
+    if (parent.namespace) {
+      return format('%s.%s', parent.namespace, parent.name)
+    }
+
+    if (Parser.MATCHES.namespace.test(parent.name)) {
+      return null
+    }
+
+    return parent.name
+  }
+
+  lineno(node) {
+    if (!isString(node['!span'])) {
+      return null
+    }
+
+    return Number(node['!span'].match(Parser.MATCHES.lineno).pop()) + 1
+  }
+
+  returns(node) {
+    if (!isString(node['!type'])) {
+      return null
+    }
+
+    const ret = node['!type'].match(Parser.MATCHES.ret)
+
+    if (!ret || !Array.isArray(ret)) {
+      return 'void'
+    }
+
+    return this.type({
+      '!type': ret[1]
+    })
+  }
+
+  isFn(node) {
+    if (!isString(node['!type'])) {
+      return false
+    }
+
+    return Parser.MATCHES.fn.test(node['!type'])
+  }
+
+  fnArgs(node) {
+    if (!isString(node['!type'])) {
+      return []
+    }
+
+    const args = node['!type'].match(Parser.MATCHES.args)
+
+    if (!Array.isArray(args) || !args.length) {
+      return ''
+    }
+
+    return args.pop().split(',').map(function (arg) {
+      const t = arg.match(Parser.MATCHES.arg)
+
+      if (!Array.isArray(t) || !t.length) {
+        return null
+      }
+
+      const type = t.pop()
+
+      if (this.define[type] && this.define[type]['!type']) {
+        return this.typeFn(this.define[type]['!type'])
+      }
+
+      if (type && Parser.MATCHES.arrArg.test(type)) {
+        return 'Array'.concat(type)
+      }
+
+      return type
+    }, this).filter(function (type) {
+      return !!type
+    })
+  }
+
+  typeFn(node) {
+    const args = this.fnArgs(node)
+    const ret = this.returns(node)
+
+    return format('%s function(%s)', ret, args ? args.join(', ') : '')
+  }
+
+  type(node) {
+    if (!isString(node['!type'])) {
+      return null
+    }
+
+    if (this.isFn(node)) {
+      return this.typeFn(node)
+    }
+
+    const clean = node['!type'].replace(/^\+/, '')
+    const mapped = Parser.TYPE_MAPPING[clean]
+
+    if (mapped) {
+      return mapped
+    }
+
+    return this.ctx.preserveType ? node['!type'] : clean
+  }
+
+  kind(node) {
+    return this.isFn(node) ? 'f' : 'v'
+  }
+
+  addr(node) {
+    if (!isString(node['!span'])) {
+      return null
+    }
+
+    const pos = node['!span'].match(Parser.MATCHES.pos)
+
+    const end = pos.pop()
+    const start = pos.pop()
+
+    const blob = this.ctx.content.slice(start, end)
+    const regexp = blob.split(/\n/).shift().replace(Parser.MATCHES.addr, '\\$&')
+    const str = new RegExp(regexp).toString()
+
+    return str
+  }
+
+  walk(node, parent) {
+    const hash = parent ? this.hashNode(parent) : undefined
+    const id = format('%s-%s', node, hash)
+
+    if (hash && includes(this.walked, id)) {
+      return null
+    }
+
+    if (parent) {
+      this.walked.push(id)
+    }
+
+    return get(this.condense, node, node)
+  }
+
+  push(tag) {
+    this.tags.push(tag)
+
+    const hasSpan = (
+      tag.origin &&
+      tag.origin['!span']
+    )
+
+    if (!hasSpan) {
+      return
+    }
+
+    const span = tag.origin['!span']
+
+    if (!isArray(this.bySpan[span])) {
+      this.bySpan[span] = []
+    }
+
+    this.bySpan[span].push(tag)
+  }
+
+  onNode(name, node, parent) {
+    let _node = node
+    if (!_node) {
+      return false
+    }
+
+    if (isString(_node)) {
+      _node = this.walk(node, parent)
+    }
+
+    if (!isObject(_node)) {
+      return false
+    }
+
+    if (!this.isDefaultType(_node['!type'])) {
+      return false
+    }
+
+    const tag = {
+      id: uuid.v1(),
+      name,
+      addr: this.addr(_node),
+      kind: this.kind(_node),
+      type: this.type(_node),
+      lineno: this.lineno(_node),
+      namespace: this.namespace(_node, parent),
+      parent: parent ? parent.id : undefined,
+      origin: {
+        '!span': _node['!span'],
+        '!type': _node['!type'],
+        '!data': _node['!data']
+      }
+    }
+
+    if (_node['!type'] || _node['!span']) {
+      this.push(tag)
+    }
+
+    this.fromTree(_node, tag)
+    return true
+  }
+
+  isDefaultType(type) {
+    // nested object
+    if (isUndefined(type)) {
+      return true
+    }
+
+    if (isFunction(type)) {
+      return true
+    }
+
+    return Parser.DEFAULT_TYPES.some(function (dt) {
+      if (isString(dt)) {
+        return type === dt
+      }
+
+      return dt.test(type)
+    })
+  }
+
+  hashNode(node) {
+    const _node = clone(node)
+    _node.id = undefined
+    _node.namespace = undefined
+    _node.parent = undefined
+    return objectHash(_node)
+  }
+
+}
+
+Parser.MATCHES = {
   pos: /^(\d*?)\[\d*?\:\d*?\]-(\d*?)\[\d*?\:\d*?\]$/,
   addr: /[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g,
   fn: /^fn\*?\(/,
@@ -22,11 +326,11 @@ const MATCHES = {
   ret: /-> (.*?)$/,
   lineno: /^\d*?\[(\d*?)\:\d*?\]-\d*?\[\d*?\:\d*?\]$/,
   namespace: /\//
-};
+}
 
-const DEFAULT_TYPES = [
+Parser.DEFAULT_TYPES = [
   /^\?/,
-  MATCHES.fn,
+  Parser.MATCHES.fn,
   /^\</,
   /^\{/,
   /^\[/,
@@ -34,319 +338,17 @@ const DEFAULT_TYPES = [
   'number',
   'bool',
   'string'
-];
-
-const TYPE_MAPPING = {
-  'Number': 'number',
-  'bool': 'boolean',
-  'String': 'string',
-  'RegExp': 'regexp'
-};
-
-var hashNode = function (n) {
-  var node = clone(n);
-  node.id = undefined;
-  node.namespace = undefined;
-  node.parent = undefined;
-  return objectHash(node);
-};
-
-var isDefaultType = function (type) {
-  // nested object
-  if (isUndefined(type)) {
-    return true;
-  }
-
-  if (isFunction(type)) {
-    return true;
-  }
-
-  return DEFAULT_TYPES.some(function (dt) {
-    if (isString(dt)) {
-      return type === dt;
-    }
-
-    return dt.test(type);
-  });
-};
-
-var Parser = function (ctx) {
-  if (!(this instanceof Parser)) {
-    return new Parser(ctx);
-  }
-
-  this.ctx = ctx;
-  this.condense = ctx.condense || {};
-  this.tags = [];
-  this.define = {};
-  this.walked = [];
-  this.bySpan = {};
-};
-
-Parser.prototype.parse = function (fn) {
-  var self = this;
-
-  if (Object.keys(self.condense).length) {
-    return self.hasCondense(fn);
-  }
-  return ''
-};
-
-Parser.prototype.hasCondense = function (fn) {
-  if (this.condense['!define']) {
-    this.define = this.condense['!define'];
-  }
-
-  this.fromTree(this.condense);
-
-  this.clean();
-
-  this.tags = this.tags.sort(function (a, b) {
-    return a.lineno - b.lineno;
-  });
-
-  fn(null, this.tags);
-};
-
-Parser.prototype.clean = function () {
-  if (!this.ctx.clean) {
-    return;
-  }
-
-  var onSpan = function (span) {
-    var tags = this.bySpan[span];
-
-    if (tags.length < 2) {
-      return;
-    }
-
-    this.tags = without(this.tags, sortBy(tags, function (tag) {
-      return (tag.namespace || '').split(/\./).length;
-    }).pop());
-  };
-
-  Object.keys(this.bySpan).forEach(onSpan, this);
-};
-
-Parser.prototype.fromTree = function (tree, parent) {
-  if (!isObject(tree)) {
-    return;
-  }
-
-  return Object.keys(tree).filter(function (key) {
-    return !(/^!/.test(key));
-  }).map(function (name) {
-    return this.onNode(name, tree[name], parent);
-  }, this);
-};
-
-Parser.prototype.namespace = function (node, parent) {
-  if (!parent) {
-    return;
-  }
-
-  if (parent.namespace) {
-    return format('%s.%s', parent.namespace, parent.name);
-  }
-
-  if (MATCHES.namespace.test(parent.name)) {
-    return;
-  }
-
-  return parent.name;
-};
-
-Parser.prototype.lineno = function (node) {
-  if (!isString(node['!span'])) {
-    return;
-  }
-
-  return Number(node['!span'].match(MATCHES.lineno).pop()) + 1;
-};
-
-Parser.prototype.returns = function (node) {
-  if (!isString(node['!type'])) {
-    return;
-  }
-
-  var ret = node['!type'].match(MATCHES.ret);
-
-  if (!ret || !Array.isArray(ret)) {
-    return 'void';
-  }
-
-  return this.type({
-    '!type': ret[1]
-  });
-};
-
-Parser.prototype.isFn = function (node) {
-  if (!isString(node['!type'])) {
-    return false;
-  }
-
-  return MATCHES.fn.test(node['!type']);
-};
-
-Parser.prototype.fnArgs = function (node) {
-  if (!isString(node['!type'])) {
-    return [];
-  }
-
-  var args = node['!type'].match(MATCHES.args);
-
-  if (!Array.isArray(args) || !args.length) {
-    return '';
-  }
-
-  return args.pop().split(',').map(function (arg) {
-    var t = arg.match(MATCHES.arg);
-
-    if (!Array.isArray(t) || !t.length) {
-      return;
-    }
-
-    var type = t.pop();
-
-    if (this.define[type] && this.define[type]['!type']) {
-      return this.typeFn(this.define[type]['!type']);
-    }
-
-    if (type && MATCHES.arrArg.test(type)) {
-      return 'Array'.concat(type);
-    }
-
-    return type;
-  }, this).filter(function (type) {
-    return !!type;
-  });
-};
-
-Parser.prototype.typeFn = function (node) {
-  var args = this.fnArgs(node);
-  var ret = this.returns(node);
-
-  return format('%s function(%s)', ret, args ? args.join(', ') : '');
-};
-
-Parser.prototype.type = function (node) {
-  if (!isString(node['!type'])) {
-    return;
-  }
-
-  if (this.isFn(node)) {
-    return this.typeFn(node);
-  }
-
-  var clean = node['!type'].replace(/^\+/, '');
-  var mapped = TYPE_MAPPING[clean];
-
-  if (mapped) {
-    return mapped;
-  }
-
-  return this.ctx.preserveType ? node['!type'] : clean;
-};
-
-Parser.prototype.kind = function (node) {
-  return this.isFn(node) ? 'f' : 'v';
-};
-
-Parser.prototype.addr = function (node) {
-  if (!isString(node['!span'])) {
-    return;
-  }
-
-  var pos = node['!span'].match(MATCHES.pos);
-
-  var end = pos.pop();
-  var start = pos.pop();
-
-  var blob = this.ctx.content.slice(start, end);
-  var regexp = blob.split(/\n/).shift().replace(MATCHES.addr, '\\$&');
-  var str = new RegExp(regexp).toString();
-
-  return str;
-};
-
-Parser.prototype.walk = function (node, parent) {
-  var hash = parent ? hashNode(parent) : undefined;
-  var id = format('%s-%s', node, hash);
-
-  if (hash && includes(this.walked, id)) {
-    return;
-  }
-
-  if (parent) {
-    this.walked.push(id);
-  }
-
-  return get(this.condense, node, node);
-};
-
-Parser.prototype.push = function (tag) {
-  this.tags.push(tag);
-
-  var hasSpan = (
-    tag.origin &&
-    tag.origin['!span']
-  );
-
-  if (!hasSpan) {
-    return;
-  }
-
-  var span = tag.origin['!span'];
-
-  if (!isArray(this.bySpan[span])) {
-    this.bySpan[span] = [];
-  }
-
-  this.bySpan[span].push(tag);
-};
-
-Parser.prototype.onNode = function (name, node, parent) {
-  if (!node) {
-    return false;
-  }
-
-  if (isString(node)) {
-    node = this.walk(node, parent);
-  }
-
-  if (!isObject(node)) {
-    return;
-  }
-
-  if (!isDefaultType(node['!type'])) {
-    return;
-  }
-
-  var tag = {
-    id: uuid.v1(),
-    name: name,
-    addr: this.addr(node),
-    kind: this.kind(node),
-    type: this.type(node),
-    lineno: this.lineno(node),
-    namespace: this.namespace(node, parent),
-    parent: parent ? parent.id : undefined,
-    origin: {
-      '!span': node['!span'],
-      '!type': node['!type'],
-      '!data': node['!data']
-    }
-  };
-
-  if (node['!type'] || node['!span']) {
-    this.push(tag);
-  }
-
-  this.fromTree(node, tag);
-};
+]
+
+Parser.TYPE_MAPPING = {
+  Number: 'number',
+  bool: 'boolean',
+  String: 'string',
+  RegExp: 'regexp'
+}
 
 module.exports = function (ctx, fn) {
-  return (new Parser(ctx)).parse(fn);
-};
+  return (new Parser(ctx)).parse(fn)
+}
 
-module.exports.ctags = require('./ctags');
+module.exports.ctags = require('./ctags')
