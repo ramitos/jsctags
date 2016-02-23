@@ -1,81 +1,41 @@
-# jsctags 
+# esctags
 
-[![](https://img.shields.io/travis/ramitos/jsctags.svg)](https://travis-ci.org/ramitos/jsctags) [![](https://img.shields.io/codeclimate/coverage/github/ramitos/jsctags.svg)](https://codeclimate.com/github/ramitos/jsctags/coverage) [![](https://img.shields.io/npm/v/jsctags.svg)](https://www.npmjs.com/package/jsctags) [![](https://img.shields.io/david/ramitos/jsctags.svg)](https://david-dm.org/ramitos/jsctags) [![](https://img.shields.io/codeclimate/github/ramitos/jsctags.svg)](https://codeclimate.com/github/ramitos/jsctags) [![](https://img.shields.io/npm/l/jsctags.svg)](https://www.npmjs.com/package/jsctags)
+[![](https://img.shields.io/travis/okcompute/esctags.svg)](https://travis-ci.org/okcompute/esctags)
+[![](https://img.shields.io/codeclimate/coverage/github/okcompute/esctags.svg)](https://codeclimate.com/github/okcompute/esctags/coverage)
+[![](https://img.shields.io/npm/v/esctags.svg)](https://www.npmjs.com/package/esctags)
+> [![](https://img.shields.io/david/okcompute/esctags.svg)](https://david-dm.org/okcompute/esctags)
+> [![](https://img.shields.io/codeclimate/github/okcompute/esctags.svg)](https://codeclimate.com/github/okcompute/esctags)
+[![](https://img.shields.io/npm/l/esctags.svg)](https://www.npmjs.com/package/esctags)
 
-[![js-semistandard-style](https://cdn.rawgit.com/flet/semistandard/master/badge.svg)](https://github.com/Flet/semistandard)
+CTags generator for ES6 using [tern](https://github.com/marijnh/tern). The
+intention is to replicate the same CLI of the original *CTags* as close as
+possible. This is to enable *ESCtags* usage with tools like *CtrlP*, *TagBar*
+and many other.
 
-jsctags generator using [tern](https://github.com/marijnh/tern)
+## Origin
+
+This software is derived from [jsctags](https://github.com/ramitos/jsctags).
 
 ## install
 
-For access to the binary:
-
 ```sh
-npm install -g git+https://github.com/ramitos/jsctags.git
-```
-
-Otherwise, add to your project's package.json under dependencies or
-dev-dependencies:
-
-```json
-"jsctags": "git://github.com/ramitos/jsctags.git"
+npm install -g esctags
 ```
 
 ## usage
 
 ```sh
-$ jsctags [--dir=/path/to] /path/to/file.js [-f]
-```
 
-```sh
-$ cat /path/to/file.js | jsctags [--dir=/path/to] [--file=/path/to/file.js] [-f]
-```
+  Usage: esctags [options] <file> [others...]
 
-By default, `jsctags` will output a JSON file. Use the `-f` flag to output an exuberant ctags-compatible file.
+  Options:
 
-```js
-var jsctags = require('jsctags'),
-    fs = require('fs')
-
-var file = '/path/to/file.js'
-var dir = '/path/to/'
-var content = fs.readFileSync(file, 'utf8')
-
-jsctags(file, dir, content, function (e, tags) {
-  console.log(tags)
-})
-```
-
-## examples
-
- * [arguments](examples/arguments.md)
- * [autothis](examples/autothis.md)
- * [browser](examples/browser.md)
- * [builtins](examples/builtins.md)
- * [cautiouspropagation](examples/cautiouspropagation.md)
- * [copyprops](examples/copyprops.md)
- * [ctorpattern](examples/ctorpattern.md)
- * [docstrings](examples/docstrings.md)
- * [effects](examples/effects.md)
- * [extends](examples/extends.md)
- * [finddef](examples/finddef.md)
- * [fn_arguments](examples/fn_arguments.md)
- * [generic_each](examples/generic_each.md)
- * [global_this](examples/global_this.md)
- * [infinite-expansion](examples/infinite-expansion.md)
- * [jsdoc](examples/jsdoc.md)
- * [merge](examples/merge.md)
- * [new_array](examples/new_array.md)
- * [new_to_prototype](examples/new_to_prototype.md)
- * [object_create](examples/object_create.md)
- * [objnames](examples/objnames.md)
- * [plus](examples/plus.md)
- * [proto](examples/proto.md)
- * [protoname](examples/protoname.md)
- * [replace_bogus_prop](examples/replace_bogus_prop.md)
- * [simple_generic](examples/simple_generic.md)
- * [simple](examples/simple.md)
-
+    -h, --help               output usage information
+    -R, --recurse            Recurse into directories
+    -a, --append             Append the tags to an existing tag file.
+    --exclude  <patterns>    Comma separated list of exclusion patterns. Exclude files and directories matching one of the `patterns`.
+    -f <name>                Write tags to specified file. Value of "-" writes tags to stdout ["tags"; or "TAGS" when -e supplied].
+    --extension <extension>  File extension to look for. Default is `.js`
 
 ## license
 

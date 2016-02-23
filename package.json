@@ -1,22 +1,22 @@
 {
-  "name": "jsctags",
+  "name": "esctags",
   "version": "4.0.0",
-  "description": "jsctags generator",
+  "description": "esctags generator",
   "keywords": [
     "ctags",
-    "jsctags",
+    "esctags",
     "tern"
   ],
-  "homepage": "https://github.com/ramitos/jsctags",
+  "homepage": "https://github.com/okcompute/esctags",
   "bugs": {
-    "url": "http://github.com/ramitos/jsctags/issues",
+    "url": "http://github.com/okcompute/esctags/issues",
     "email": "mail@sergioramos.me"
   },
   "license": "MIT",
   "main": "src/parser.js",
   "bin": {
-    "jsctags": "bin/jsctags",
-    "xjsctags": "bin/xjsctags"
+    "esctags": "bin/esctags",
+    "xesctags": "bin/xesctags"
   },
   "directories": {
     "lib": "src",
@@ -24,11 +24,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/ramitos/jsctags.git"
+    "url": "git://github.com/okcompute/esctags.git"
   },
   "scripts": {
     "test": "NODE_ENV=test nyc node test/runner.js",
-    "lint": "node_modules/.bin/semistandard | node_modules/.bin/snazzy",
+    "lint": "eslint .",
     "coverage": "nyc report --reporter=text-lcov | codeclimate-test-reporter"
   },
   "dependencies": {
