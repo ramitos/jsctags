@@ -116,7 +116,7 @@ class Parser {
     }
 
     return this.type({
-      '!type': ret[1]
+      '!type': ret[1],
     })
   }
 
@@ -275,8 +275,8 @@ class Parser {
       origin: {
         '!span': _node['!span'],
         '!type': _node['!type'],
-        '!data': _node['!data']
-      }
+        '!data': _node['!data'],
+      },
     }
 
     if (_node['!type'] || _node['!span']) {
@@ -325,7 +325,7 @@ Parser.MATCHES = {
   arrArg: /^\[/,
   ret: /-> (.*?)$/,
   lineno: /^\d*?\[(\d*?)\:\d*?\]-\d*?\[\d*?\:\d*?\]$/,
-  namespace: /\//
+  namespace: /\//,
 }
 
 Parser.DEFAULT_TYPES = [
@@ -337,14 +337,14 @@ Parser.DEFAULT_TYPES = [
   /^\+/,
   'number',
   'bool',
-  'string'
+  'string',
 ]
 
 Parser.TYPE_MAPPING = {
   Number: 'number',
   bool: 'boolean',
   String: 'string',
-  RegExp: 'regexp'
+  RegExp: 'regexp',
 }
 
 module.exports = function (ctx, fn) {

@@ -1,61 +1,63 @@
 // Based on DoctorJS (https://github.com/drudge/doctorjs/blob/node/jsctags/ctags/writer.js)
 
-var ESCAPES = {
+const ESCAPES = {
   '\\': '\\\\',
   '\n': '\\n',
   '\r': '\\r',
-  '\t': '\\t'
-};
+  '\t': '\\t',
+}
 
-var SPECIAL_FIELDS = {
+const SPECIAL_FIELDS = {
   addr: true,
   kind: true,
   name: true,
   tagfile: true,
   origin: true,
   id: true,
-  parent: true
-};
+  parent: true,
+}
 
 module.exports = function (tags) {
   return tags.map(tag => {
-    var buf = [tag.name, '\t', tags.tagfile, '\t'];
-    buf.push(tag.addr !== undefined ? tag.addr : '//');
-    var tagfields = [];
+    const buf = [tag.name, '\t', tags.tagfile, '\t']
+    buf.push(tag.addr !== undefined ? tag.addr : '//')
+    const tagfields = []
 
     Object.keys(tag).forEach(function (key) {
       if (!SPECIAL_FIELDS[key]) {
-        tagfields.push(key);
+        tagfields.push(key)
       }
-    });
+    })
 
-    tagfields.sort();
+    tagfields.sort()
 
     if (tag.kind === undefined && tagfields.length === 0) {
-      buf.push('\n');
-      return buf.join('');
+      buf.push('\n')
+      return buf.join('')
     }
 
-    buf.push(';\"');
+    buf.push(';\"')
 
-    if (tag.kind !== undefined) buf.push('\t', tag.kind);
+    if (tag.kind !== undefined) {
+      buf.push('\t', tag.kind)
+    }
 
     tagfields.forEach(function (tagfield) {
       if (!tag[tagfield]) {
-        return;
+        return
       }
 
       if (typeof tag[tagfield] !== 'string') {
-        tag[tagfield] = tag[tagfield].toString();
+        tag[tagfield] = tag[tagfield].toString()
       }
 
-      buf.push('\t', tagfield, ':');
+      buf.push('\t', tagfield, ':')
       buf.push(tag[tagfield].replace('[\\\n\r\t]', function (str) {
-        return ESCAPES[str];
-      }));
-    });
+        return ESCAPES[str]
+      }))
+    })
 
-    buf.push('\n');
-    return buf.join('');
-  });
-};
+    buf.push('\n')
+    return buf.join('')
+  })
+}
