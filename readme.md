@@ -3,14 +3,11 @@
 [![](https://img.shields.io/travis/okcompute/esctags.svg)](https://travis-ci.org/okcompute/esctags)
 [![](https://img.shields.io/codeclimate/coverage/github/okcompute/esctags.svg)](https://codeclimate.com/github/okcompute/esctags/coverage)
 [![](https://img.shields.io/npm/v/esctags.svg)](https://www.npmjs.com/package/esctags)
-> [![](https://img.shields.io/david/okcompute/esctags.svg)](https://david-dm.org/okcompute/esctags)
-> [![](https://img.shields.io/codeclimate/github/okcompute/esctags.svg)](https://codeclimate.com/github/okcompute/esctags)
-[![](https://img.shields.io/npm/l/esctags.svg)](https://www.npmjs.com/package/esctags)
 
-CTags generator for ES6 using [tern](https://github.com/marijnh/tern). The
-intention is to replicate the same CLI of the original *CTags* as close as
-possible. This is to enable *ESCtags* usage with tools like *CtrlP*, *TagBar*
-and many other.
+CTags generator built/for ES6 using [tern](https://github.com/marijnh/tern). The
+goal of this tool is to replicate the same CLI of the original *CTags* as close
+as possible. This should enable *ESCtags* usage with tools like *CtrlP*,
+*TagBar* and many others.
 
 ## Origin
 

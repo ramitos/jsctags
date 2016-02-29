@@ -3,11 +3,6 @@ language: node_js
 node_js:
     - 5
     - 4
-    - 0.12
 script:
     - npm test
     - npm run lint
-addons:
-  code_climate:
-    repo_token: d6465eace94bdabe7c904aed550f80d5ea3d0e76726a2f173bd9493c0956b27d
-after_success: npm run coverage
