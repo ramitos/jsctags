@@ -1,0 +1,2 @@
+SampleClass	/Users/okcompute/Developer/Git/esctags/test/fixtures/module.js	/SampleClass/;"	f	lineno:1	type:void function()
+classVariable	/Users/okcompute/Developer/Git/esctags/test/fixtures/module.js	/classVariable/;"	v	lineno:7	namespace:SampleClass	type:number

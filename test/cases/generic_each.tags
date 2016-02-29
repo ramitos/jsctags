@@ -1,9 +1,0 @@
-each	__DIR__/generic_each.js	/each/;"	f	lineno:2	type:void function(Array[number]|[each.!0.<i>], fn(n: number)
-context	__DIR__/generic_each.js	/context/;"	v	lineno:2	namespace:each	type:string
-iterator	__DIR__/generic_each.js	/iterator/;"	f	lineno:2	namespace:each	type:void function(each.!0.<i>)
-obj	__DIR__/generic_each.js	/obj/;"	v	lineno:2	namespace:each	type:[each.!0.<i>]
-i	__DIR__/generic_each.js	/i/;"	v	lineno:7	namespace:each	type:number
-l	__DIR__/generic_each.js	/l/;"	v	lineno:7	namespace:each	type:number
-
-
-

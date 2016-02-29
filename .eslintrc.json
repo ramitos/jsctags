@@ -2,7 +2,8 @@
   "env": {
     "browser": true,
     "node": true,
-    "es6": true
+    "es6": true,
+    "mocha": true
   },
 
   "ecmaFeatures": {
@@ -31,7 +32,7 @@
   },
 
   "rules": {
-    "comma-dangle": 2,
+    "comma-dangle": [1, "always-multiline"],
     "no-cond-assign": 2,
     "no-console": 0,
     "no-constant-condition": 2,
@@ -169,6 +170,7 @@
     "no-var": 2,
     "object-shorthand": 2,
     "prefer-const": 2,
+    "no-const-assign": 2,
     "max-depth": [2, 3],
     "max-len": [2, 100, 2],
     "max-params": [2, 5],

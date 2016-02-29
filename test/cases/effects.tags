@@ -1,8 +1,0 @@
-b	__DIR__/effects.js	/b/;"	v	lineno:3	type:[bool]
-c	__DIR__/effects.js	/c/;"	v	lineno:7	type:[string|number]
-d	__DIR__/effects.js	/d/;"	v	lineno:12	type:number
-setD	__DIR__/effects.js	/setD/;"	f	lineno:13	type:void function(number)
-a	__DIR__/effects.js	/a/;"	v	lineno:13	namespace:setD	type:number
-
-
-

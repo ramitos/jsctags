@@ -1,8 +1,0 @@
-x	__DIR__/template.js	/x/;"	v	lineno:2	type:number
-build	__DIR__/template.js	/build/;"	f	lineno:6	type:boolean function(Array[string], number, string)
-a	__DIR__/template.js	/a/;"	v	lineno:6	namespace:build	type:number
-b	__DIR__/template.js	/b/;"	v	lineno:6	namespace:build	type:string
-strs	__DIR__/template.js	/strs/;"	v	lineno:6	namespace:build	type:[string]
-
-
-

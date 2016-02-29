@@ -1,7 +1,0 @@
-Bar	__DIR__/autothis.js	/Bar/;"	f	lineno:1	type:void function()
-hallo	__DIR__/autothis.js	/hallo/;"	f	lineno:2	namespace:Bar.prototype	type:void function()
-fn2	__DIR__/autothis.js	/fn2/;"	f	lineno:7	namespace:Bar.prototype	type:void function()
-fn2	__DIR__/autothis.js	/fn2/;"	f	lineno:11	namespace:Date.prototype	type:void function()
-
-
-

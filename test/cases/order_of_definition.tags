@@ -1,8 +1,0 @@
-foo	__DIR__/order_of_definition.js	/foo/;"	v	lineno:7
-baz	__DIR__/order_of_definition.js	/baz/;"	v	lineno:9
-bug	__DIR__/order_of_definition.js	/bug/;"	f	lineno:9	namespace:baz	type:void function(baz.bug.!0)
-x	__DIR__/order_of_definition.js	/x/;"	f	lineno:10	namespace:baz.bug	type:void function()
-bar	__DIR__/order_of_definition.js	/bar/;"	v	lineno:15	namespace:foo
-
-
-

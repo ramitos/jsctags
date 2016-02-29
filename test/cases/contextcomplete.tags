@@ -1,6 +1,0 @@
-whoAmI	__DIR__/contextcomplete.js	/whoAmI/;"	f	lineno:1	type:void function(?, ?)
-a	__DIR__/contextcomplete.js	/a/;"	v	lineno:1	namespace:whoAmI
-i	__DIR__/contextcomplete.js	/i/;"	v	lineno:1	namespace:whoAmI
-
-
-

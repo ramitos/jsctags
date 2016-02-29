@@ -1,9 +1,0 @@
-bar	__DIR__/objectlit.js	/bar/;"	v	lineno:1	type:number
-foo	__DIR__/objectlit.js	/foo/;"	v	lineno:3
-a	__DIR__/objectlit.js	/a/;"	v	lineno:6	namespace:foo	type:boolean
-method	__DIR__/objectlit.js	/method/;"	f	lineno:7	namespace:foo	type:string function()
-baz	__DIR__/objectlit.js	/baz/;"	v	lineno:10
-b	__DIR__/objectlit.js	/b/;"	v	lineno:12	namespace:baz	type:string
-
-
-

@@ -15,8 +15,7 @@
   "license": "MIT",
   "main": "src/parser.js",
   "bin": {
-    "esctags": "bin/esctags",
-    "xesctags": "bin/xesctags"
+    "esctags": "bin/esctags"
   },
   "directories": {
     "lib": "src",
@@ -27,7 +26,8 @@
     "url": "git://github.com/okcompute/esctags.git"
   },
   "scripts": {
-    "test": "NODE_ENV=test nyc node test/runner.js",
+    "test": "NODE_ENV=test mocha --recursive --use_strict",
+    "test:watch": "npm test -- --recursive --use_strict --watch",
     "lint": "eslint .",
     "coverage": "nyc report --reporter=text-lcov | codeclimate-test-reporter"
   },
@@ -62,16 +62,13 @@
   "devDependencies": {
     "codeclimate-test-reporter": "^0.1.1",
     "eslint": "^2.1.0",
+    "expect": "^1.14.0",
     "glob": "^6.0.1",
     "lodash.take": "^3.0.0",
     "longjohn": "^0.2.10",
+    "mocha": "^2.4.5",
     "nyc": "^3.2.2",
-    "semistandard": "^7.0.3",
-    "snazzy": "^2.0.1"
-  },
-  "semistandard": {
-    "ignore": [
-      "test/cases/"
-    ]
+    "snazzy": "^2.0.1",
+    "tmp": "0.0.28"
   }
 }

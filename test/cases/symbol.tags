@@ -1,7 +1,0 @@
-mySym	__DIR__/symbol.js	/mySym/;"	v	lineno:1
-obj	__DIR__/symbol.js	/obj/;"	v	lineno:3
-:my_sym	__DIR__/symbol.js	/mySym/;"	v	lineno:4	namespace:obj	type:number
-iterator	__DIR__/symbol.js	/Symbol\.iterator/;"	v	lineno:8	namespace:obj.:Symbol	type:string
-
-
-

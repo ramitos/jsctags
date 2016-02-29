@@ -1,6 +1,0 @@
-x	__DIR__/block_scope.js	/x/;"	f	lineno:1	type:void function(string)
-a	__DIR__/block_scope.js	/a/;"	v	lineno:1	namespace:x	type:string
-c	__DIR__/block_scope.js	/c/;"	v	lineno:5	namespace:x	type:boolean
-
-
-

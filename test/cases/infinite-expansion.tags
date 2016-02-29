@@ -1,9 +1,0 @@
-f	__DIR__/infinite-expansion.js	/f/;"	f	lineno:3	type:void function(f)
-n	__DIR__/infinite-expansion.js	/n/;"	f	lineno:3	namespace:f	type:void function(f)
-prototype	__DIR__/infinite-expansion.js	/prototype/;"	v	lineno:4	namespace:f.n
-x	__DIR__/infinite-expansion.js	/x/;"	v	lineno:10	type:[x]
-goop	__DIR__/infinite-expansion.js	/goop/;"	f	lineno:15	type:void function(?) function(number)
-n	__DIR__/infinite-expansion.js	/n/;"	v	lineno:15	namespace:goop	type:number
-
-
-

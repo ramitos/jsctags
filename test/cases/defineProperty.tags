@@ -1,9 +1,0 @@
-o	__DIR__/defineProperty.js	/o/;"	v	lineno:1
-prop1	__DIR__/defineProperty.js	/"prop1"/;"	v	lineno:4	namespace:o	type:string
-prop2	__DIR__/defineProperty.js	/"prop2"/;"	v	lineno:8	namespace:o	type:number
-o2	__DIR__/defineProperty.js	/o2/;"	v	lineno:17
-prop1	__DIR__/defineProperty.js	/\{/;"	v	lineno:19	namespace:o2	type:number
-prop2	__DIR__/defineProperty.js	/\{/;"	v	lineno:19	namespace:o2	type:boolean
-
-
-

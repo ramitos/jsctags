@@ -1,8 +1,0 @@
-foo	__DIR__/simple.js	/foo/;"	v	lineno:1	type:number
-x	__DIR__/simple.js	/x/;"	v	lineno:6
-init	__DIR__/simple.js	/init/;"	f	lineno:8	type:void function(x)
-foo	__DIR__/simple.js	/foo/;"	v	lineno:9	namespace:x	type:number
-bar	__DIR__/simple.js	/bar/;"	v	lineno:10	namespace:x	type:number
-
-
-
