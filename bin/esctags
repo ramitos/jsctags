@@ -1,4 +1,4 @@
-#!/usr/bin/env node --use_strict
+#!/usr/bin/env node
 
 const path = require('path')
 const async = require('async')
@@ -37,7 +37,7 @@ program
   // Filtering
   const extension = new RegExp(`.*\.${program.extension}$`)
   // Always exclude `node_modules` and '.git' folders
-  const patterns = [glob('*/node_modules/*'), glob('*/.git/*')]
+  let patterns = [glob('*/node_modules/*'), glob('*/.git/*')]
   if (program.exclude) {
     patterns = patterns.concat(program.exclude)
   }

@@ -1,16 +1,18 @@
 {
   "name": "esctags",
-  "version": "4.0.0",
-  "description": "esctags generator",
+  "version": "0.0.1",
+  "description": "CTags generator",
   "keywords": [
     "ctags",
     "esctags",
-    "tern"
+    "tern",
+    "vim",
+    "emacs"
   ],
   "homepage": "https://github.com/okcompute/esctags",
   "bugs": {
     "url": "http://github.com/okcompute/esctags/issues",
-    "email": "mail@sergioramos.me"
+    "email": "okcompute@icloud.com"
   },
   "license": "MIT",
   "main": "src/parser.js",
@@ -18,7 +20,6 @@
     "esctags": "bin/esctags"
   },
   "directories": {
-    "lib": "src",
     "bin": "bin"
   },
   "repository": {
@@ -32,13 +33,9 @@
     "coverage": "nyc report --reporter=text-lcov | codeclimate-test-reporter"
   },
   "dependencies": {
-    "acorn": "^2.6.4",
     "async": "^1.5.0",
-    "collect-stream": "^1.1.1",
     "commander": "^2.9.0",
-    "deepmerge": "^0.2.10",
     "diveSync": "^0.3.0",
-    "force-array": "^3.1.0",
     "glob-to-regexp": "^0.1.0",
     "is-string": "^1.0.4",
     "lodash.clonedeep": "^3.0.2",
@@ -53,22 +50,15 @@
     "lodash.without": "^3.2.1",
     "node-uuid": "^1.4.7",
     "object-hash": "^0.9.2",
-    "once": "^1.3.3",
-    "optimist": "^0.6.1",
-    "tern": "^0.17.0",
-    "tern-react": "^0.1.0",
-    "tryor": "^0.1.2"
+    "tern": "^0.17.0"
   },
   "devDependencies": {
     "codeclimate-test-reporter": "^0.1.1",
     "eslint": "^2.1.0",
     "expect": "^1.14.0",
     "glob": "^6.0.1",
-    "lodash.take": "^3.0.0",
-    "longjohn": "^0.2.10",
     "mocha": "^2.4.5",
     "nyc": "^3.2.2",
-    "snazzy": "^2.0.1",
     "tmp": "0.0.28"
   }
 }
