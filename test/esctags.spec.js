@@ -5,7 +5,7 @@ const path = require('path')
 const tmp = require('tmp')
 
 function run(args, target) {
-  const cmd = path.resolve(__dirname, '../bin/esctags')
+  const cmd = 'node --use_strict ' + path.resolve(__dirname, '../bin/esctags')
   const _args = args ? args : ''
   const _target = target ? target : ''
   return execSync(
