@@ -34,6 +34,12 @@ describe('ESCtags', () => {
         encoding: 'utf-8',
       }
     )
+    // Update `{dir}` marker with the real current directory of computer running
+    // the tests.
+    expectedCtags = expectedCtags.replace(
+      /\{dir\}/g,
+      path.resolve(__dirname)
+    )
   })
 
   after(() => {
