@@ -28,7 +28,7 @@
   },
   "scripts": {
     "test": "NODE_ENV=test mocha --recursive --use_strict",
-    "test:watch": "npm test -- --recursive --use_strict --watch",
+    "test:watch": "npm test -- --watch",
     "lint": "eslint .",
     "coverage": "nyc report --reporter=text-lcov | codeclimate-test-reporter"
   },

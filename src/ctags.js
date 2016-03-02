@@ -1,3 +1,5 @@
+'use strict'
+
 // Based on DoctorJS (https://github.com/drudge/doctorjs/blob/node/jsctags/ctags/writer.js)
 
 const ESCAPES = {
