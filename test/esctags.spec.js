@@ -49,7 +49,7 @@ describe('ESCtags', () => {
   describe('command line interface', () => {
     it('should display error message when no arguments', () => {
       const output = run()
-      const expected = 'jsctags: No files specified. Try "jsctags --help".\n'
+      const expected = 'esctags: No files specified. Try "esctags --help".\n'
       expect(output).toEqual(expected)
     })
 
