@@ -1,7 +1,6 @@
 # esctags
 
 [![](https://img.shields.io/travis/okcompute/esctags.svg)](https://travis-ci.org/okcompute/esctags)
-[![](https://img.shields.io/codeclimate/coverage/github/okcompute/esctags.svg)](https://codeclimate.com/github/okcompute/esctags/coverage)
 [![](https://img.shields.io/npm/v/esctags.svg)](https://www.npmjs.com/package/esctags)
 
 CTags generator built/for ES6 using [tern](https://github.com/marijnh/tern). The
@@ -11,7 +10,9 @@ as possible. This should enable *ESCtags* usage with tools like *CtrlP*,
 
 ## Origin
 
-This software is derived from [jsctags](https://github.com/ramitos/jsctags).
+This software is derived/inspired from
+[jsctags](https://github.com/ramitos/jsctags). The source code to convert tern
+ast to tags is mostly the same.
 
 ## install
 

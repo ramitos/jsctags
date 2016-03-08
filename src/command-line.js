@@ -136,6 +136,6 @@ program
 .parse(process.argv)
 
 if (program.args.length === 0) {
-  console.log('jsctags: No files specified. Try "jsctags --help".')
+  console.log('esctags: No files specified. Try "esctags --help".')
 }
 
