@@ -5,7 +5,7 @@ const path = require('path')
 const tmp = require('tmp')
 
 function run(args, target) {
-  const cmd = 'node --use_strict ' + path.resolve(__dirname, '../bin/esctags')
+  const cmd = 'node --use_strict ' + path.resolve(__dirname, '../bin/es-ctags')
   const _args = args ? args : ''
   const _target = target ? target : ''
   return execSync(
@@ -49,7 +49,7 @@ describe('ESCtags', () => {
   describe('command line interface', () => {
     it('should display error message when no arguments', () => {
       const output = run()
-      const expected = 'esctags: No files specified. Try "esctags --help".\n'
+      const expected = 'es-ctags: No files specified. Try "es-ctags --help".\n'
       expect(output).toEqual(expected)
     })
 

@@ -1,27 +1,26 @@
 {
-  "name": "esctags",
+  "name": "es-ctags",
   "version": "0.0.1",
   "description": "CTags generator",
   "keywords": [
     "ctags",
-    "esctags",
+    "es-ctags",
     "tern",
     "vim",
     "emacs"
   ],
-  "homepage": "https://github.com/okcompute/esctags",
+  "homepage": "https://github.com/okcompute/es-ctags",
   "bugs": {
-    "url": "http://github.com/okcompute/esctags/issues",
+    "url": "http://github.com/okcompute/es-ctags/issues",
     "email": "okcompute@icloud.com"
   },
   "license": "MIT",
-  "main": "src/parser.js",
   "bin": {
-    "esctags": "bin/esctags"
+    "es-ctags": "bin/es-ctags"
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/okcompute/esctags.git"
+    "url": "git://github.com/okcompute/es-ctags.git"
   },
   "scripts": {
     "test": "NODE_ENV=test mocha --recursive --use_strict",

@@ -1,7 +1,7 @@
-# esctags
+# es-ctags
 
-[![](https://img.shields.io/travis/okcompute/esctags.svg)](https://travis-ci.org/okcompute/esctags)
-[![](https://img.shields.io/npm/v/esctags.svg)](https://www.npmjs.com/package/esctags)
+[![](https://img.shields.io/travis/okcompute/es-ctags.svg)](https://travis-ci.org/okcompute/es-ctags)
+[![](https://img.shields.io/npm/v/es-ctags.svg)](https://www.npmjs.com/package/es-ctags)
 
 CTags generator built/for ES6 using [tern](https://github.com/marijnh/tern). The
 goal of this tool is to replicate the same CLI of the original *CTags* as close
@@ -17,14 +17,14 @@ ast to tags is mostly the same.
 ## install
 
 ```sh
-npm install -g esctags
+npm install -g es-ctags
 ```
 
 ## usage
 
 ```sh
 
-  Usage: esctags [options] <file> [others...]
+  Usage: es-ctags [options] <file> [others...]
 
   Options:
 

@@ -7,7 +7,7 @@ const diveSync = require('diveSync')
 const program = require('commander')
 const globToRegexp = require('glob-to-regexp')
 
-const jsctags = require('../')
+const esctags = require('./parser')
 const condense = require('./tern-server')
 
 const glob = pattern => globToRegexp(pattern, {flags: 'i'})
@@ -74,7 +74,7 @@ program
       const content = fs.readFileSync(filepath, 'utf8')
 
       // Generate tags
-      jsctags({
+      esctags({
         condense: result,
         content,
       }, (err, tags) => {
@@ -93,7 +93,7 @@ program
 
     // Convert to ctags format
     let ctags = results.map(tags => {
-      return jsctags.ctags(tags, {args: false, local: false})
+      return esctags.ctags(tags, {args: false, local: false})
     })
 
     // flatten
@@ -136,6 +136,6 @@ program
 .parse(process.argv)
 
 if (program.args.length === 0) {
-  console.log('esctags: No files specified. Try "esctags --help".')
+  console.log('es-ctags: No files specified. Try "es-ctags --help".')
 }
 
