@@ -2,6 +2,7 @@
 
 [![](https://img.shields.io/travis/okcompute/es-ctags.svg)](https://travis-ci.org/okcompute/es-ctags)
 [![](https://img.shields.io/npm/v/es-ctags.svg)](https://www.npmjs.com/package/es-ctags)
+[![npm downloads](https://img.shields.io/npm/dm/es-ctags.svg?style=flat-square)](http://npm-stat.com/charts.html?package=es-ctags&from=2016-03-8)
 
 CTags generator built/for ES6 using [tern](https://github.com/marijnh/tern). The
 goal of this tool is to replicate the same CLI of the original *CTags* as close
