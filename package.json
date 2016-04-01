@@ -45,7 +45,7 @@
     "lodash.without": "^3.2.1",
     "node-uuid": "^1.4.7",
     "object-hash": "^0.9.2",
-    "tern": "^0.17.0"
+    "tern": "^0.18.0"
   },
   "devDependencies": {
     "eslint": "^2.1.0",
