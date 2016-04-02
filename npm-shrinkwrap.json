@@ -972,6 +972,11 @@
       "from": "lodash.defaults@>=4.0.1 <5.0.0",
       "resolved": "https://registry.npmjs.org/lodash.defaults/-/lodash.defaults-4.0.1.tgz"
     },
+    "lodash.flatten": {
+      "version": "4.1.1",
+      "from": "lodash.flatten@>=4.1.1 <5.0.0",
+      "resolved": "https://registry.npmjs.org/lodash.flatten/-/lodash.flatten-4.1.1.tgz"
+    },
     "lodash.get": {
       "version": "4.1.2",
       "from": "lodash.get@>=4.1.2 <5.0.0",

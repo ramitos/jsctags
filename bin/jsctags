@@ -3,12 +3,14 @@
 var format = require('util').format;
 var forceArray = require('force-array');
 var argv = require('optimist').argv;
-var jsctags = require('../');
 var path = require('path');
 var glob = require('glob');
 var collect = require('collect-stream');
+var flatten = require('lodash.flatten');
 var async = require('async');
 var fs = require('fs');
+
+var jsctags = require('../');
 
 var dir = (function() {
   if (argv.dir) {
@@ -48,7 +50,52 @@ var file = (function() {
   });
 })();
 
-if (!argv._.length && !argv.find) {
+var outputTags = function(tags) {
+  var ctags = flatten(jsctags.ctags(tags));
+  console.log(ctags.join(''));
+};
+
+var outputJSON = function(tags) {
+  console.log(JSON.stringify(flatten(forceArray(tags)), null, 2));
+};
+
+var onResults = function(err, results) {
+  if (err) {
+    throw err;
+  }
+
+  var fn = argv.f ? outputTags : outputJSON;
+
+  var tags = results.filter(function(res) {
+    if (res instanceof Error) {
+      console.error(err);
+      return false
+    }
+
+    return true;
+  });
+
+  tags.tagfile = results.tagfile;
+
+  fn(tags);
+};
+
+var parse = function(ctx, fn) {
+  jsctags(ctx, function(err, tags) {
+    if (err) {
+      return fn(err);
+    }
+
+    tags.tagfile = ctx.file;
+    tags.forEach(function(tag) {
+      tag.tagfile = ctx.file;
+    });
+
+    fn(err, tags);
+  });
+};
+
+var fromStdin = function() {
   collect(process.stdin, function(err, content) {
     if (err) {
       throw err;
@@ -58,72 +105,29 @@ if (!argv._.length && !argv.find) {
       content = content.toString();
     }
 
-    jsctags({
+    parse({
       file: file,
       dir: dir,
       content: content
-    }, function(err, tags) {
-      if (err) {
-        throw err;
-      }
-
-      tags.tagfile = file;
-      tags.forEach(function(tag) {
-        tag.tagfile = file;
-      });
-
-      if (argv.f) {
-        console.log(jsctags.ctags(tags).join(''));
-      } else {
-        console.log(JSON.stringify(tags, null, 2));
-      }
-    });
+    }, onResults);
   });
-} else {
+};
+
+var fromFiles = function() {
   var files = Array.isArray(file) ? file : [file];
-  async.map(files, function(file, callback) {
+  async.map(files, function(file, fn) {
     fs.readFile(file, 'utf8', function(err, content) {
       if (err) {
-        return callback(null, err);
+        return fn(null, err);
       }
 
-      jsctags({
+      parse({
         file: file,
         dir: dir,
         content: content
-      }, function(err, tags) {
-        if (err) {
-          return callback(null, err);
-        }
-
-        tags.tagfile = file;
-        tags.forEach(function(tag) {
-          tag.tagfile = file;
-        });
-
-        callback(null, tags);
-      });
+      }, fn);
     });
-  }, function(err, results) {
-    if (err) {
-      throw err;
-    }
+  }, onResults);
+};
 
-    results = results.filter(function(res) {
-      if (res instanceof Error) {
-        console.error(err);
-        return false
-      }
-
-      return true;
-    });
-
-    if (argv.f) {
-      var ctags = Array.prototype.concat.apply([], results.map(jsctags.ctags));
-      console.log(ctags.join(''));
-    } else {
-      var tags = Array.prototype.concat.apply([], results);
-      console.log(JSON.stringify(tags, null, 2));
-    }
-  });
-}
+(!argv._.length && !argv.find ? fromStdin : fromFiles)();

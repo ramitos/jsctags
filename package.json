@@ -40,6 +40,7 @@
     "glob": "^7.0.3",
     "lodash.clonedeep": "^4.3.2",
     "lodash.defaults": "^4.0.1",
+    "lodash.flatten": "^4.1.1",
     "lodash.get": "^4.1.2",
     "lodash.includes": "^4.1.1",
     "lodash.isarray": "^4.0.0",

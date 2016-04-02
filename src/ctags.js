@@ -1,5 +1,7 @@
 // Based on DoctorJS (https://github.com/drudge/doctorjs/blob/node/jsctags/ctags/writer.js)
 
+var isArray = require('lodash.isarray');
+
 var ESCAPES = {
   '\\': '\\\\',
   '\n': '\\n',
@@ -17,8 +19,12 @@ var SPECIAL_FIELDS = {
   parent: true
 };
 
-module.exports = function(tags) {
+var convert = module.exports = function(tags) {
   return tags.map(function(tag) {
+    if (isArray(tag)) {
+      return convert(tag);
+    }
+
     var buf = [tag.name, '\t', tags.tagfile, '\t'];
     buf.push(tag.addr !== undefined ? tag.addr : '//');
     var tagfields = [];

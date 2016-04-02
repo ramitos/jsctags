@@ -30,7 +30,7 @@ var files = [
 });
 
 async.forEachSeries(files, function(f, fn) {
-  async.series([
+  async.parallel([
     async.apply(run, {
       cmd: f.name,
       filename: f.filename,
