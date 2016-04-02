@@ -10,8 +10,8 @@ var once = require('once');
 require('tern-react');
 require('./local-scope');
 
-var config = function (dir, file) {
-  var config = tryor(function () {
+var config = function(dir, file) {
+  var config = tryor(function() {
     return fs.readFileSync(path.join(dir, '.tern-project'), 'utf8');
   }, '{}');
 
@@ -36,22 +36,22 @@ var config = function (dir, file) {
   });
 };
 
-var defs = function (libs) {
+var defs = function(libs) {
   var base = path.resolve(__dirname, '../node_modules/tern/defs');
 
-  return libs.map(function (lib) {
+  return libs.map(function(lib) {
     if (!/\.json$/.test(lib)) lib = lib + '.json';
     var file = path.join(base, lib);
     if (fs.existsSync(file)) return require(file);
-  }).filter(function (lib) {
+  }).filter(function(lib) {
     return !!lib;
   });
 };
 
-var server = function (config, dir) {
+var server = function(config, dir) {
   var base = path.resolve(__dirname, '../node_modules/tern/plugin');
 
-  Object.keys(config.plugins).forEach(function (plugin) {
+  Object.keys(config.plugins).forEach(function(plugin) {
     var file = path.join(base, format('%s.js', plugin));
 
     if (fs.existsSync(file)) {
@@ -67,10 +67,10 @@ var server = function (config, dir) {
   });
 };
 
-module.exports = function (options, fn) {
+module.exports = function(options, fn) {
   var __fn = once(fn);
 
-  var _fn = function (err, tags) {
+  var _fn = function(err, tags) {
     if (err) {
       return __fn(err);
     }
@@ -92,11 +92,11 @@ module.exports = function (options, fn) {
       text: options.content,
       type: 'full'
     }]
-  }, function (err) {
+  }, function(err) {
     _fn(err);
   });
 
-  options.server.flush(function (err) {
+  options.server.flush(function(err) {
     if (err) {
       return _fn(err);
     }

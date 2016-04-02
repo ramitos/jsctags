@@ -16,7 +16,7 @@ var walkall = require('./walkall');
 // of a given definition. I.e., if you use tern to ask for the definition of
 // some symbol, and it gives you an Identifier, you can use findDefinitionNode
 // to find the definition value of the Identifier.
-exports.findDefinitionNode = function (ast, start, end) {
+exports.findDefinitionNode = function(ast, start, end) {
   var origin = exports.findOriginPseudonode(ast, start, end);
 
   if (!origin) {
@@ -45,7 +45,7 @@ exports.findDefinitionNode = function (ast, start, end) {
 //
 // This mapping is intended to correspond to the mapping between a tern defs
 // JSON file !span and the names/paths of keys pointing to that !span.
-exports.findNameNodes = function (ast, start, end) {
+exports.findNameNodes = function(ast, start, end) {
   var def = walk.findNodeAt(ast, start, end, null, walkall.traversers);
 
   if (!def) {
@@ -56,7 +56,7 @@ exports.findNameNodes = function (ast, start, end) {
 
   // When we search for the enclosing node, we don't want to just end up with
   // the def node itself, so exclude it (node != def).
-  var test = function (type, node) {
+  var test = function(type, node) {
     return (def.type === 'FunctionDeclaration' && type === 'FunctionDeclaration') ||
       (node !== def && ['AssignmentExpression', 'FunctionDeclaration', 'FunctionExpression', 'ObjectExpression', 'VariableDeclarator'].indexOf(type) !== -1);
   };
@@ -106,7 +106,7 @@ exports.findNameNodes = function (ast, start, end) {
 // This function returns ObjectExpression property objects if the Identifier is
 // an ObjectExpression property key. These objects are not true AST nodes (thus
 // the "pseudonode" description).
-exports.findOriginPseudonode = function (ast, start, end) {
+exports.findOriginPseudonode = function(ast, start, end) {
   var nameNode = walk.findNodeAt(ast, start, end, okNodeTypes(['Identifier', 'Literal']), walkall.traversers);
 
   if (!nameNode) {
@@ -159,13 +159,13 @@ exports.findOriginPseudonode = function (ast, start, end) {
   }
 };
 
-function okNodeTypes (types) {
-  return function (_t) {
+function okNodeTypes(types) {
+  return function(_t) {
     return types.indexOf(_t) !== -1;
   };
 }
 
-function findPropInObjectExpressionByKeyPos (objectExpr, start, end) {
+function findPropInObjectExpressionByKeyPos(objectExpr, start, end) {
   for (var i = 0; i < objectExpr.properties.length; ++i) {
     var prop = objectExpr.properties[i];
     if (prop.key.start === start && prop.key.end === end) {
@@ -174,7 +174,7 @@ function findPropInObjectExpressionByKeyPos (objectExpr, start, end) {
   }
 }
 
-function findPropInObjectExpressionByValuePos (objectExpr, start, end) {
+function findPropInObjectExpressionByValuePos(objectExpr, start, end) {
   for (var i = 0; i < objectExpr.properties.length; ++i) {
     var prop = objectExpr.properties[i];
     if (prop.value.start === start && prop.value.end === end) {
@@ -186,14 +186,14 @@ function findPropInObjectExpressionByValuePos (objectExpr, start, end) {
 // rightmostExprOfAssignment follows chained AssignmentExpressions to the rightmost
 // expression. E.g., given the AssignmentExpression AST node of `a = b = c =
 // 7`, it returns the Literal value 7 on the far right.
-function rightmostExprOfAssignment (assignmentExpr) {
+function rightmostExprOfAssignment(assignmentExpr) {
   while (assignmentExpr.type === 'AssignmentExpression') {
     assignmentExpr = assignmentExpr.right;
   }
   return assignmentExpr;
 }
 
-function collectChainedAssignmentNames (ast, expr, seen) {
+function collectChainedAssignmentNames(ast, expr, seen) {
   var names = [];
   if (expr.type === 'VariableDeclarator') {
     names.push(expr.id);
@@ -211,7 +211,7 @@ function collectChainedAssignmentNames (ast, expr, seen) {
   seen.push(expr);
 
   // Traverse to parent AssignmentExpressions to return all names in chained assignments.
-  var test = function (type, node) {
+  var test = function(type, node) {
     return seen.indexOf(node) === -1 && ((type === 'AssignmentExpression' && node.right === expr) || (type === 'VariableDeclarator' && node.init === expr));
   };
 
@@ -228,7 +228,7 @@ function collectChainedAssignmentNames (ast, expr, seen) {
 // useful when you have a name node in an ObjectExpression property or
 // MemberExpression property, which could be either an Identifier or Literal,
 // and you just want to extract the string name.
-var identOrLiteralString = exports.identOrLiteralString = function (n) {
+var identOrLiteralString = exports.identOrLiteralString = function(n) {
   if (n.type === 'Identifier') {
     return n.name;
   }

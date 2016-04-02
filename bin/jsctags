@@ -10,7 +10,7 @@ var collect = require('collect-stream');
 var async = require('async');
 var fs = require('fs');
 
-var dir = (function () {
+var dir = (function() {
   if (argv.dir) {
     return path.resolve(argv.dir);
   }
@@ -26,7 +26,7 @@ var dir = (function () {
   return '///null';
 })();
 
-var file = (function () {
+var file = (function() {
   if (argv.file) {
     return path.resolve(process.cwd(), argv.file);
   }
@@ -36,20 +36,20 @@ var file = (function () {
   }
 
   var find = forceArray(argv.find);
-  var files = !find.length ? argv._ : find.reduce(function (files, pattern) {
+  var files = !find.length ? argv._ : find.reduce(function(files, pattern) {
     return files.concat(glob.sync(pattern, {
       nosort: true,
       silent: true
     }));
   }, []);
 
-  return files.map(function (file) {
+  return files.map(function(file) {
     return path.resolve(process.cwd(), file);
   });
 })();
 
 if (!argv._.length && !argv.find) {
-  collect(process.stdin, function (err, content) {
+  collect(process.stdin, function(err, content) {
     if (err) {
       throw err;
     }
@@ -62,13 +62,13 @@ if (!argv._.length && !argv.find) {
       file: file,
       dir: dir,
       content: content
-    }, function (err, tags) {
+    }, function(err, tags) {
       if (err) {
         throw err;
       }
 
       tags.tagfile = file;
-      tags.forEach(function (tag) {
+      tags.forEach(function(tag) {
         tag.tagfile = file;
       });
 
@@ -81,8 +81,8 @@ if (!argv._.length && !argv.find) {
   });
 } else {
   var files = Array.isArray(file) ? file : [file];
-  async.map(files, function (file, callback) {
-    fs.readFile(file, 'utf8', function (err, content) {
+  async.map(files, function(file, callback) {
+    fs.readFile(file, 'utf8', function(err, content) {
       if (err) {
         return callback(null, err);
       }
@@ -91,20 +91,20 @@ if (!argv._.length && !argv.find) {
         file: file,
         dir: dir,
         content: content
-      }, function (err, tags) {
+      }, function(err, tags) {
         if (err) {
           return callback(null, err);
         }
 
         tags.tagfile = file;
-        tags.forEach(function (tag) {
+        tags.forEach(function(tag) {
           tag.tagfile = file;
         });
 
         callback(null, tags);
       });
     });
-  }, function (err, results) {
+  }, function(err, results) {
     if (err) {
       throw err;
     }

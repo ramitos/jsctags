@@ -7,7 +7,7 @@ var examples = path.join(__dirname, '../examples/*.md');
 var jsons = path.join(cases, '*.json');
 var tags = path.join(cases, '*.tags');
 
-glob.sync(jsons).forEach(function (file) {
+glob.sync(jsons).forEach(function(file) {
   var json = fs.readFileSync(file, 'utf-8');
 
   json = json.replace(/\n\s+"id"\:\s+".+",\n/g, '\n');
@@ -16,8 +16,8 @@ glob.sync(jsons).forEach(function (file) {
   fs.writeFileSync(file, json, 'utf-8');
 });
 
-var cleanPath = function (file) {
-  var str = fs.readFileSync(file, 'utf-8').split(/\n/).map(function (line) {
+var cleanPath = function(file) {
+  var str = fs.readFileSync(file, 'utf-8').split(/\n/).map(function(line) {
     return line.replace(cases, '__DIR__');
   }).join('\n');
 

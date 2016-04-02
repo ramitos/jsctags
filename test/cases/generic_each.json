@@ -6,7 +6,7 @@
     "type": "void function(Array[number]|[each.!0.<i>], fn(n: number)",
     "lineno": 2,
     "origin": {
-      "!span": "44[1:4]-48[1:8]",
+      "!span": "43[1:4]-47[1:8]",
       "!type": "fn(obj: [number]|[each.!0.<i>], iterator: fn(n: number)|fn(o: each.!0.<i>), context: ?)",
       "!data": {
         "isConstructor": false,
@@ -23,7 +23,7 @@
     "lineno": 2,
     "namespace": "each",
     "origin": {
-      "!span": "75[1:35]-82[1:42]",
+      "!span": "74[1:35]-81[1:42]",
       "!type": "+String",
       "!data": {
         "isConstructor": false,
@@ -42,7 +42,7 @@
     "lineno": 2,
     "namespace": "each",
     "origin": {
-      "!span": "65[1:25]-73[1:33]",
+      "!span": "64[1:25]-72[1:33]",
       "!type": "fn(o: each.!0.<i>)",
       "!data": {
         "isConstructor": false,
@@ -61,7 +61,7 @@
     "lineno": 2,
     "namespace": "each",
     "origin": {
-      "!span": "60[1:20]-63[1:23]",
+      "!span": "59[1:20]-62[1:23]",
       "!type": "[each.!0.<i>]",
       "!data": {
         "isConstructor": false,
@@ -80,7 +80,7 @@
     "lineno": 7,
     "namespace": "each",
     "origin": {
-      "!span": "281[6:13]-282[6:14]",
+      "!span": "280[6:13]-281[6:14]",
       "!type": "number",
       "!data": {
         "isConstructor": false,
@@ -99,7 +99,7 @@
     "lineno": 7,
     "namespace": "each",
     "origin": {
-      "!span": "288[6:20]-289[6:21]",
+      "!span": "287[6:20]-288[6:21]",
       "!type": "number",
       "!data": {
         "isConstructor": false,

@@ -61,7 +61,7 @@ var types = exports.types = [
 ];
 
 // makeVisitors returns an object with a property keyed on each AST node type whose value is c.
-exports.makeVisitors = function (c) {
+exports.makeVisitors = function(c) {
   var visitors = {};
   for (var i = 0; i < types.length; ++i) {
     var type = types[i];
@@ -72,7 +72,7 @@ exports.makeVisitors = function (c) {
 
 // traverser is an AST visitor that programmatically traverses the AST node by inspecting its object
 // structure (as opposed to following hard-coded paths).
-exports.traverser = function (node, st, c) {
+exports.traverser = function(node, st, c) {
   var keys = Object.keys(node).sort();
   for (var i = 0; i < keys.length; ++i) {
     var key = keys[i];

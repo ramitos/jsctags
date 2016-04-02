@@ -41,7 +41,7 @@ var file = '/path/to/file.js'
 var dir = '/path/to/'
 var content = fs.readFileSync(file, 'utf8')
 
-jsctags(file, dir, content, function (e, tags) {
+jsctags(file, dir, content, function(e, tags) {
   console.log(tags)
 })
 ```

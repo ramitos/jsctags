@@ -17,13 +17,13 @@ var SPECIAL_FIELDS = {
   parent: true
 };
 
-module.exports = function (tags) {
-  return tags.map(function (tag) {
+module.exports = function(tags) {
+  return tags.map(function(tag) {
     var buf = [tag.name, '\t', tags.tagfile, '\t'];
     buf.push(tag.addr !== undefined ? tag.addr : '//');
     var tagfields = [];
 
-    Object.keys(tag).forEach(function (key) {
+    Object.keys(tag).forEach(function(key) {
       if (!SPECIAL_FIELDS[key]) {
         tagfields.push(key);
       }
@@ -40,7 +40,7 @@ module.exports = function (tags) {
 
     if (tag.kind !== undefined) buf.push('\t', tag.kind);
 
-    tagfields.forEach(function (tagfield) {
+    tagfields.forEach(function(tagfield) {
       if (!tag[tagfield]) {
         return;
       }
@@ -50,7 +50,7 @@ module.exports = function (tags) {
       }
 
       buf.push('\t', tagfield, ':');
-      buf.push(tag[tagfield].replace('[\\\n\r\t]', function (str) {
+      buf.push(tag[tagfield].replace('[\\\n\r\t]', function(str) {
         return ESCAPES[str];
       }));
     });

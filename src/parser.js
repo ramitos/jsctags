@@ -46,7 +46,7 @@ var TYPE_MAPPING = {
   'RegExp': 'regexp'
 };
 
-var hashNode = function (n) {
+var hashNode = function(n) {
   var node = clone(n);
   node.id = undefined;
   node.namespace = undefined;
@@ -54,7 +54,7 @@ var hashNode = function (n) {
   return objectHash(node);
 };
 
-var isDefaultType = function (type) {
+var isDefaultType = function(type) {
   // nested object
   if (isUndefined(type)) {
     return true;
@@ -64,7 +64,7 @@ var isDefaultType = function (type) {
     return true;
   }
 
-  return DEFAULT_TYPES.some(function (dt) {
+  return DEFAULT_TYPES.some(function(dt) {
     if (isString(dt)) {
       return type === dt;
     }
@@ -73,7 +73,7 @@ var isDefaultType = function (type) {
   });
 };
 
-var Parser = function (ctx) {
+var Parser = function(ctx) {
   if (!(this instanceof Parser)) {
     return new Parser(ctx);
   }
@@ -91,14 +91,14 @@ var Parser = function (ctx) {
   this.bySpan = {};
 };
 
-Parser.prototype.parse = function (fn) {
+Parser.prototype.parse = function(fn) {
   var self = this;
 
   if (Object.keys(self.condense).length) {
     return self.hasCondense(fn);
   }
 
-  condense(self.ctx, function (err, condense) {
+  condense(self.ctx, function(err, condense) {
     if (err) {
       return fn(err);
     }
@@ -108,7 +108,7 @@ Parser.prototype.parse = function (fn) {
   });
 };
 
-Parser.prototype.hasCondense = function (fn) {
+Parser.prototype.hasCondense = function(fn) {
   if (this.condense['!define']) {
     this.define = this.condense['!define'];
   }
@@ -117,26 +117,26 @@ Parser.prototype.hasCondense = function (fn) {
 
   this.clean();
 
-  this.tags = this.tags.sort(function (a, b) {
+  this.tags = this.tags.sort(function(a, b) {
     return a.lineno - b.lineno;
   });
 
   fn(null, this.tags);
 };
 
-Parser.prototype.clean = function () {
+Parser.prototype.clean = function() {
   if (!this.ctx.clean) {
     return;
   }
 
-  var onSpan = function (span) {
+  var onSpan = function(span) {
     var tags = this.bySpan[span];
 
     if (tags.length < 2) {
       return;
     }
 
-    this.tags = without(this.tags, sortBy(tags, function (tag) {
+    this.tags = without(this.tags, sortBy(tags, function(tag) {
       return (tag.namespace || '').split(/\./).length;
     }).pop());
   };
@@ -144,19 +144,19 @@ Parser.prototype.clean = function () {
   Object.keys(this.bySpan).forEach(onSpan, this);
 };
 
-Parser.prototype.fromTree = function (tree, parent) {
+Parser.prototype.fromTree = function(tree, parent) {
   if (!isObject(tree)) {
     return;
   }
 
-  return Object.keys(tree).filter(function (key) {
+  return Object.keys(tree).filter(function(key) {
     return !(/^!/.test(key));
-  }).map(function (name) {
+  }).map(function(name) {
     return this.onNode(name, tree[name], parent);
   }, this);
 };
 
-Parser.prototype.namespace = function (node, parent) {
+Parser.prototype.namespace = function(node, parent) {
   if (!parent) {
     return;
   }
@@ -176,7 +176,7 @@ Parser.prototype.namespace = function (node, parent) {
   return parent.name;
 };
 
-Parser.prototype.lineno = function (node) {
+Parser.prototype.lineno = function(node) {
   if (!isString(node['!span'])) {
     return;
   }
@@ -184,7 +184,7 @@ Parser.prototype.lineno = function (node) {
   return Number(node['!span'].match(MATCHES.lineno).pop()) + 1;
 };
 
-Parser.prototype.returns = function (node) {
+Parser.prototype.returns = function(node) {
   if (!isString(node['!type'])) {
     return;
   }
@@ -200,7 +200,7 @@ Parser.prototype.returns = function (node) {
   });
 };
 
-Parser.prototype.isFn = function (node) {
+Parser.prototype.isFn = function(node) {
   if (!isString(node['!type'])) {
     return false;
   }
@@ -208,7 +208,7 @@ Parser.prototype.isFn = function (node) {
   return MATCHES.fn.test(node['!type']);
 };
 
-Parser.prototype.fnArgs = function (node) {
+Parser.prototype.fnArgs = function(node) {
   if (!isString(node['!type'])) {
     return [];
   }
@@ -219,7 +219,7 @@ Parser.prototype.fnArgs = function (node) {
     return '';
   }
 
-  return args.pop().split(',').map(function (arg) {
+  return args.pop().split(',').map(function(arg) {
     var t = arg.match(MATCHES.arg);
 
     if (!Array.isArray(t) || !t.length) {
@@ -237,19 +237,19 @@ Parser.prototype.fnArgs = function (node) {
     }
 
     return type;
-  }, this).filter(function (type) {
+  }, this).filter(function(type) {
     return !!type;
   });
 };
 
-Parser.prototype.typeFn = function (node) {
+Parser.prototype.typeFn = function(node) {
   var args = this.fnArgs(node);
   var ret = this.returns(node);
 
   return format('%s function(%s)', ret, args ? args.join(', ') : '');
 };
 
-Parser.prototype.type = function (node) {
+Parser.prototype.type = function(node) {
   if (!isString(node['!type'])) {
     return;
   }
@@ -268,11 +268,11 @@ Parser.prototype.type = function (node) {
   return this.ctx.preserveType ? node['!type'] : clean;
 };
 
-Parser.prototype.kind = function (node) {
+Parser.prototype.kind = function(node) {
   return this.isFn(node) ? 'f' : 'v';
 };
 
-Parser.prototype.addr = function (node) {
+Parser.prototype.addr = function(node) {
   if (!isString(node['!span'])) {
     return;
   }
@@ -289,7 +289,7 @@ Parser.prototype.addr = function (node) {
   return str;
 };
 
-Parser.prototype.walk = function (node, parent) {
+Parser.prototype.walk = function(node, parent) {
   var hash = parent ? hashNode(parent) : undefined;
   var id = format('%s-%s', node, hash);
 
@@ -304,7 +304,7 @@ Parser.prototype.walk = function (node, parent) {
   return get(this.condense, node, node);
 };
 
-Parser.prototype.push = function (tag) {
+Parser.prototype.push = function(tag) {
   this.tags.push(tag);
 
   var hasSpan = (
@@ -325,7 +325,7 @@ Parser.prototype.push = function (tag) {
   this.bySpan[span].push(tag);
 };
 
-Parser.prototype.onNode = function (name, node, parent) {
+Parser.prototype.onNode = function(name, node, parent) {
   if (!node) {
     return false;
   }
@@ -365,7 +365,7 @@ Parser.prototype.onNode = function (name, node, parent) {
   this.fromTree(node, tag);
 };
 
-module.exports = function (ctx, fn) {
+module.exports = function(ctx, fn) {
   return (new Parser(ctx)).parse(fn);
 };
 

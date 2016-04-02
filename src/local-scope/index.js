@@ -13,7 +13,7 @@ var infer = require('tern/lib/infer');
 var defnode = require('./defnode');
 var walkall = require('./walkall');
 
-var joinPaths = function (a, b) {
+var joinPaths = function(a, b) {
   if (a) {
     return a + '.' + b;
   }
@@ -21,14 +21,14 @@ var joinPaths = function (a, b) {
   return b;
 };
 
-var getId = function (n) {
+var getId = function(n) {
   return format('%d-%d', n.start, n.end);
 };
 
-var postCondenseReach = function (server, options, state) {
+var postCondenseReach = function(server, options, state) {
   var seenSpans = {};
 
-  var visitScope = function (state, scope, path) {
+  var visitScope = function(state, scope, path) {
     // detect cycles
     if (scope._localScopeCondenseSeen) {
       return;
@@ -36,12 +36,12 @@ var postCondenseReach = function (server, options, state) {
 
     scope._localScopeCondenseSeen = true;
 
-    Object.keys(get(scope, 'props', {})).sort().forEach(function (prop) {
+    Object.keys(get(scope, 'props', {})).sort().forEach(function(prop) {
       visitAVal(state, scope.props[prop], joinPaths(path, prop));
     });
   };
 
-  var visitNode = function (state, node, path) {
+  var visitNode = function(state, node, path) {
     if (!node) {
       return;
     }
@@ -49,7 +49,7 @@ var postCondenseReach = function (server, options, state) {
     walk.recursive(node, {
       path: path,
       ids: []
-    }, walkall.makeVisitors(function (node, st, walk) {
+    }, walkall.makeVisitors(function(node, st, walk) {
       if (includes(st.ids, getId(node))) {
         return;
       }
@@ -69,13 +69,13 @@ var postCondenseReach = function (server, options, state) {
     }));
   };
 
-  var isArg = function (state, av) {
-    return get(av, 'propertyOf.fnType.args', []).some(function (arg) {
+  var isArg = function(state, av) {
+    return get(av, 'propertyOf.fnType.args', []).some(function(arg) {
       return arg.propertyName === av.propertyName;
     });
   };
 
-  var isScoped = function (state, av) {
+  var isScoped = function(state, av) {
     var g = (
       (av.path === '<top>') ||
       isUndefined(get(av, 'propertyOf.isBlock'))
@@ -84,8 +84,8 @@ var postCondenseReach = function (server, options, state) {
     return g ? false : isArg(state, av);
   };
 
-  var getType = function (state, av, proto) {
-    var types = get(av, 'types', []).map(function (type) {
+  var getType = function(state, av, proto) {
+    var types = get(av, 'types', []).map(function(type) {
       return get(type, 'proto.name');
     });
 
@@ -93,18 +93,18 @@ var postCondenseReach = function (server, options, state) {
       return false;
     }
 
-    var single = types.reduce(function (a, b) {
+    var single = types.reduce(function(a, b) {
       return (a === b) ? a : undefined;
     });
 
     return single;
   };
 
-  var isConstructor = function (state, type) {
+  var isConstructor = function(state, type) {
     return !isUndefined(get(type, 'props.prototype'));
   };
 
-  var visitAVal = function (state, av, path) {
+  var visitAVal = function(state, av, path) {
     if (av._localScopeCondenseSeen) {
       return;
     }
@@ -162,7 +162,7 @@ var postCondenseReach = function (server, options, state) {
       isConstructor: isConstructor(state, type)
     }, state.types[path].data);
 
-    forceArray(av.types).forEach(function (type) {
+    forceArray(av.types).forEach(function(type) {
       visitScope(state, type, path);
     });
 
@@ -177,7 +177,7 @@ var postCondenseReach = function (server, options, state) {
 
   // Traverse accessible types first so we name things with reachable path
   // prefixes if possible.
-  Object.keys(state.types).sort().forEach(function (path) {
+  Object.keys(state.types).sort().forEach(function(path) {
     var data = state.types[path];
     seenSpans[data.span] = true;
 
@@ -193,16 +193,16 @@ var postCondenseReach = function (server, options, state) {
     }
   });
 
-  Object.keys(state.types).sort().forEach(function (path) {
+  Object.keys(state.types).sort().forEach(function(path) {
     var data = state.types[path];
 
-    Object.keys(get(data, 'type.props', {})).forEach(function (prop) {
+    Object.keys(get(data, 'type.props', {})).forEach(function(prop) {
       visitAVal(state, data.type.props[prop], joinPaths(path, prop));
     });
   });
 
   // Assume that file scope is not reachable.
-  state.cx.parent.files.forEach(function (file) {
+  state.cx.parent.files.forEach(function(file) {
     var path = file.name.replace(/\./g, '`');
     visitScope(state, file.scope, path);
 
@@ -212,10 +212,10 @@ var postCondenseReach = function (server, options, state) {
   });
 };
 
-tern.registerPlugin('local-scope', function (server, options) {
+tern.registerPlugin('local-scope', function(server, options) {
   return {
     passes: {
-      postCondenseReach: function (state) {
+      postCondenseReach: function(state) {
         postCondenseReach(server, options, state);
       }
     }

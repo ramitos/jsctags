@@ -16,20 +16,20 @@ var run = require('./run')({
 var files = [
   'js',
   'jsx'
-].reduce(function (sum, ext) {
+].reduce(function(sum, ext) {
   var pattern = format('test/cases/*.%s', ext);
   return sum.concat(glob.sync(pattern, {
     nosort: true,
     silent: true
   }));
-}, []).map(function (name) {
+}, []).map(function(name) {
   return {
     name: name,
     filename: path.resolve(process.cwd(), name)
   };
 });
 
-async.forEachSeries(files, function (f, fn) {
+async.forEachSeries(files, function(f, fn) {
   async.series([
     async.apply(run, {
       cmd: f.name,
@@ -64,8 +64,8 @@ async.forEachSeries(files, function (f, fn) {
       ext: '.tags'
     })
   ], fn);
-}, function () {
-  var names = files.map(function (f) {
+}, function() {
+  var names = files.map(function(f) {
     return f.name;
   });
 

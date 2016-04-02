@@ -6,7 +6,7 @@ x. //+ toExponential, toPrecision, toString, toFixed
 
 Math.cos(x). //+ toExponential, ...
 
-var a = [1, 2, 3]; 
+var a = [1, 2, 3];
 a[0]. //+ toExponential, toPrecision, toString, toFixed
 
 var y = a.slice(2);
@@ -15,7 +15,7 @@ y[0]. //+ toExponential, toPrecision, toString, toFixed
 var z = [].reduce(function(a, b) { return a - 2; }, 0);
 z. //+ toExponential, toPrecision, toString, toFixed, ...
 
-var n = Math.cos.call(null, 10); 
+var n = Math.cos.call(null, 10);
 n. //+ toExponential, toPrecision, toString, toFixed
 
 var m = 10 - "1";
@@ -24,7 +24,7 @@ m. //+ toExponential, toPrecision, toString, toFixed
 var k = m;
 k. //+ toExponential, toPrecision, toString, toFixed
 
-var l = (function () { return { x: 10, y: 100 }; })().x;
+var l = (function() { return { x: 10, y: 100 }; })().x;
 l. //+ toExponential, toPrecision, toString, toFixed
 
 var a2 = parseInt("2");
@@ -101,7 +101,7 @@ function personType(firstname, lastname, age, eyecolor) {
   this.changeName = changeName;
   this. //+ age, changeName, eyecolor, firstname, lastname
   this.changeName     //+ changeName
-  this.changeName()   
+  this.changeName()
   function changeName(name) {
     this.lastname = name;
     return this.lastname;
@@ -136,7 +136,7 @@ gen1.quux = 50;
 gen2.kaka = 10;
 gen1.  //+ bar, baz, foo, foo2, quux
 gen1.foo. //+ toExponential, toPrecision, toFixed, toString
-gen1.kaka. //+ 
+gen1.kaka. //+
 gen1.quux. //+ toExponential, toPrecision, toFixed, toString
 gen2. //+ bar, baz, foo, foo2, quux, kaka
 gen2.kaka. //+ toExponential, toPrecision, toFixed, toString
@@ -150,7 +150,7 @@ extend.bar. //+ toExponential, toPrecision, toFixed, toString
 
 var empty = Object.create(null);
 empty.prop1 = "hi";
-empty.hasOwnProperty. //+ 
+empty.hasOwnProperty. //+
 empty.prop1. //+ charAt, charCodeAt, concat, ...
 
 function Ctor1() { this.x = 10; }
@@ -160,7 +160,7 @@ Ctor1. //+ apply, bind, call, prototype
 function Ctor2() {}
 
 new Ctor1(). //+ a, x
-new Ctor2(). //+ 
+new Ctor2(). //+
 
 var singleton = {a: 10, b: 20}.  //+ a, b
 
@@ -174,7 +174,7 @@ Foo.prototype = {
   bar: 13
 };
 
-var foo = new Foo(true); 
+var foo = new Foo(true);
 
 foo. //+ bar, makeString, x, y, ...
 foo.makeString(). //+ charAt, charCodeAt, concat, ...
@@ -186,7 +186,7 @@ config = {
       container: 'eytp-maincontainer',
       canvas: 'eytp-playercanvas',
       player: 'eytp-player',
-      controls: 'eytp-controls' 
+      controls: 'eytp-controls'
      }
    }
 }
@@ -196,7 +196,7 @@ config.CSS.IDs. //+ container, canvas, player, controls
 
 // array tests
 
-var a = [1, 2, 3]; 
+var a = [1, 2, 3];
 a. //+ pop, push, reverse, shift, sort, ...
 
 var years = [1950, 1960, 1970, 1980, 1990, 2000, 2010];
@@ -216,21 +216,21 @@ arr2. //+ pop, shift, sort, ...
 
 function scope1() {arr2. } //+ pop, shift, sort, ...  @25
 
-var f = function (arr1, arr2) {}(arr2. ); //+ pop, shift, sort, ... @39
+var f = function(arr1, arr2) {}(arr2. ); //+ pop, shift, sort, ... @39
 
-var f2 = function (arr3) {arr3. }("foo bar baz".split(" ")); //+ pop, ... @32
+var f2 = function(arr3) {arr3. }("foo bar baz".split(" ")); //+ pop, ... @32
 
-var f3 = function (arr4) {arr4. }("test string"); //+ charAt, ... @32
+var f3 = function(arr4) {arr4. }("test string"); //+ charAt, ... @32
 
 (function() {
   var innerArr1 = arr2;
-  var refArr = innerArr1; 
+  var refArr = innerArr1;
   innerArr1. //+ pop, shift, sort, ...
 
   var ref = innerArr2;
   ref. //+ pop, shift, sort, ...
 
-  var innerArr2 = [1, 2, 3]; 
+  var innerArr2 = [1, 2, 3];
   var self = this;
   function nestedFun(){
     innerArr3. //+ pop, shift, sort, ...
@@ -256,19 +256,19 @@ function one(){
   person. //+ charAt, charCodeAt, concat, ...
   var person = "test";
   person. //+ charAt, charCodeAt, concat, ...
-  var localVar1InOne = "test"; 
-  globalVar1 = 10; 
+  var localVar1InOne = "test";
+  globalVar1 = 10;
   function innerFunc1() {
     globalVar1. //+ toExponential, toPrecision, toFixed, toString
     localVar1InOne. //+ charAt, charCodeAt, concat, ...
     var localVar1InInnerFunc = "hello";
   }
-  localVar1InInnerFunc  //+ 
+  localVar1InInnerFunc  //+
 }
 person. //+ firstname, lastname, age, eyecolor
 
 globalVar1. //+ toExponential, toPrecision, toFixed, toString
-localVar1InOne. //+ 
+localVar1InOne. //+
 
 function timeout(f, timeout) {}
 var obj = {
@@ -281,7 +281,7 @@ var obj = {
   }
 };
 
-(function () {
+(function() {
   var dog = "German Shepherd";
   localVarBecomeGlobal = [1, 2, 3];
 })();
@@ -295,10 +295,10 @@ function testIfControlFlow1() {
     var varInIf = "in if";
     varInIf. //+ charAt, charCodeAt, concat, ...
     var f = (function() {
-          var name = "inner func"; 
+          var name = "inner func";
           varInIf. //+ charAt, charCodeAt, concat, ...
           return { name: name }; })();
-      
+
     f.name. //+ charAt, charCodeAt, concat, ...
     if (true) {
       var inNestedIf = "in nested if";
@@ -308,11 +308,11 @@ function testIfControlFlow1() {
       inNestedIf. //+ charAt, charCodeAt, concat, ...
     }
   }
-  t. //+ 
+  t. //+
   f. //+ name
 }
-inNestedIf.        //+ 
-varInIf.           //+ 
+inNestedIf.        //+
+varInIf.           //+
 
 // for control flow
 function testForControlFlow1() {
@@ -328,32 +328,32 @@ function testForControlFlow1() {
     varInNestedForLoop. //+ toExponential, toPrecision, toString, toFixed
   }
 }
-varInForLoop. //+ 
-varInNestedForLoop. //+  
+varInForLoop. //+
+varInNestedForLoop. //+
 
 // for/in loop
 function testForInLoopFlow1() {
-  for (x in person) {     
-    person[x]. //+ 
+  for (x in person) {
+    person[x]. //+
   }
 }
 
 // while loop
 function testWhileLoopFlow1() {
-  var n = 5; 
+  var n = 5;
   while (n-- > 0) {
     var varInWhileLoop = "test";
   }
 }
-varInWhileLoop. //+ 
+varInWhileLoop. //+
 
 function testDoWhileLoopFlow1() {
-  n = 5; 
+  n = 5;
   do {
     var varInDoWhileLoop = "test";
   } while(n-- > 0);
 }
-varInDoWhileLoop. //+ 
+varInDoWhileLoop. //+
 
 
 // break
@@ -370,8 +370,8 @@ function testBreakFlow1() {
     testContinue. //+ charAt, charCodeAt, concat, ...
   }
 }
-testBreak. //+ 
-testContinue. //+ 
+testBreak. //+
+testContinue. //+
 
 // switch/case
 
@@ -392,7 +392,7 @@ function testSwitchFlow1(n) {
   inCase2. //+ charAt, charCodeAt, concat, ...
 }
 
-inCase1. //+ 
+inCase1. //+
 
 // try/catch/finally
 
@@ -408,8 +408,8 @@ function testTryCatchFlow1() {
   }
 }
 
-varInTry. //+ 
-varInCatch. //+ 
+varInTry. //+
+varInCatch. //+
 ```
 ```json
 [

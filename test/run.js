@@ -13,14 +13,14 @@ var async = require('async');
 var fs = require('fs');
 var md5 = require('md5');
 
-var read = function (filenames) {
-  return forceArray(filenames).map(function (filename) {
+var read = function(filenames) {
+  return forceArray(filenames).map(function(filename) {
     return fs.readFileSync(filename, 'utf-8');
   }).join('\n');
 };
 
-var test = function (t, fn) {
-  var clean = function (v) {
+var test = function(t, fn) {
+  var clean = function(v) {
     return [{
       m: /__DIR__/g,
       r: t.dir
@@ -30,17 +30,17 @@ var test = function (t, fn) {
     }, {
       m: /\n\s+"parent"\:\s+".+",\n/g,
       r: '\n'
-    }].reduce(function (v, r) {
+    }].reduce(function(v, r) {
       return v.replace(r.m, r.r || '');
     }, v);
   };
 
-  return function (err, stdio) {
+  return function(err, stdio) {
     if (err || stdio.stderr.length) {
       return fn(err || new Error(stdio.stderr.toString()));
     }
 
-    var expected = read((function () {
+    var expected = read((function() {
       if (!t.filename) {
         return path.join(__dirname, format('cases/_%s', t.ext));
       }
@@ -69,8 +69,8 @@ var test = function (t, fn) {
   };
 };
 
-var logErr = function (fn) {
-  return function (err) {
+var logErr = function(fn) {
+  return function(err) {
     if (!err) {
       return fn();
     }
@@ -79,16 +79,16 @@ var logErr = function (fn) {
       throw err;
     }
 
-    var firstchar = function (str) {
+    var firstchar = function(str) {
       var match = (/^[\x20\x09\x0a\x0d]*(.)/).exec(str);
       return match ? match[1] : '';
     };
 
-    var parse = function (v) {
+    var parse = function(v) {
       return includes(['[', '{'], firstchar(v)) ? JSON.parse(v) : v;
     };
 
-    var write = function (type) {
+    var write = function(type) {
       var filename = format('%s.%s%s', md5(err.expected), type, err.ext);
       fs.writeFileSync(path.join(process.cwd(), filename), err[type], 'utf-8');
       console.log('wrote %s', filename);
@@ -101,8 +101,8 @@ var logErr = function (fn) {
   };
 };
 
-module.exports = function (ctx) {
-  return function (t, fn) {
+module.exports = function(ctx) {
+  return function(t, fn) {
     var child = cp.spawn(ctx.bin, t.cmd.split(/\s/), {
       cwd: process.cwd()
     });
