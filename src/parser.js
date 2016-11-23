@@ -12,7 +12,7 @@ const without = require('lodash.without')
 const get = require('lodash.get')
 const objectHash = require('object-hash')
 const clone = require('lodash.clonedeep')
-const uuid = require('node-uuid')
+const uuid = require('uuid')
 
 
 class Parser {

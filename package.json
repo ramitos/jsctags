@@ -43,9 +43,9 @@
     "lodash.isundefined": "^3.0.1",
     "lodash.sortby": "^3.1.5",
     "lodash.without": "^3.2.1",
-    "node-uuid": "^1.4.7",
     "object-hash": "^0.9.2",
-    "tern": "^0.18.0"
+    "tern": "^0.18.0",
+    "uuid": "^3.0.0"
   },
   "devDependencies": {
     "eslint": "^2.1.0",
