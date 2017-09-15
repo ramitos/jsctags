@@ -56,10 +56,7 @@ var server = function(config, dir) {
     if (fs.existsSync(file)) {
       return require(file);
     } else {
-      var tryRequire = function(name) {
-        return tryor(require.bind(require, name));
-      };
-      return tryRequire('tern-' + plugin) || tryRequire(plugin);
+      return tryor(require.bind(require, 'tern-' + plugin));
     }
   });
 
