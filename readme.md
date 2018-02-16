@@ -37,11 +37,13 @@ By default, `jsctags` will output a JSON file. Use the `-f` flag to output an ex
 var jsctags = require('jsctags'),
     fs = require('fs')
 
-var file = '/path/to/file.js'
-var dir = '/path/to/'
-var content = fs.readFileSync(file, 'utf8')
+var options = {
+  file: '/path/to/file.js',
+  dir: '/path/to/',
+  content: fs.readFileSync(file, 'utf8')
+}
 
-jsctags(file, dir, content, function(e, tags) {
+jsctags(options, function(e, tags) {
   console.log(tags)
 })
 ```
