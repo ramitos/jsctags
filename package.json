@@ -56,7 +56,7 @@
     "once": "^1.4.0",
     "optimist": "^0.6.1",
     "tern": "^0.21.0",
-    "tern-jsx": "ramitos/tern-jsx#bb32547",
+    "tern-jsx": "ramitos/tern-jsx#fc9b687",
     "tryor": "^0.1.2"
   },
   "devDependencies": {
