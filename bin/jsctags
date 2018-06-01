@@ -38,12 +38,16 @@ var file = (function() {
   }
 
   var find = forceArray(argv.find);
-  var files = !find.length ? argv._ : find.reduce(function(files, pattern) {
-    return files.concat(glob.sync(pattern, {
-      nosort: true,
-      silent: true
-    }));
-  }, []);
+  var files = !find.length
+    ? argv._
+    : find.reduce(function(files, pattern) {
+        return files.concat(
+          glob.sync(pattern, {
+            nosort: true,
+            silent: true
+          })
+        );
+      }, []);
 
   return files.map(function(file) {
     return path.resolve(process.cwd(), file);
@@ -69,7 +73,7 @@ var onResults = function(err, results) {
   var tags = results.filter(function(res) {
     if (res instanceof Error) {
       console.error(err);
-      return false
+      return false;
     }
 
     return true;
@@ -105,29 +109,39 @@ var fromStdin = function() {
       content = content.toString();
     }
 
-    parse({
-      file: file,
-      dir: dir,
-      content: content
-    }, onResults);
+    parse(
+      {
+        file: file,
+        dir: dir,
+        content: content
+      },
+      onResults
+    );
   });
 };
 
 var fromFiles = function() {
   var files = Array.isArray(file) ? file : [file];
-  async.map(files, function(file, fn) {
-    fs.readFile(file, 'utf8', function(err, content) {
-      if (err) {
-        return fn(null, err);
-      }
+  async.map(
+    files,
+    function(file, fn) {
+      fs.readFile(file, 'utf8', function(err, content) {
+        if (err) {
+          return fn(null, err);
+        }
 
-      parse({
-        file: file,
-        dir: dir,
-        content: content
-      }, fn);
-    });
-  }, onResults);
+        parse(
+          {
+            file: file,
+            dir: dir,
+            content: content
+          },
+          fn
+        );
+      });
+    },
+    onResults
+  );
 };
 
 (!argv._.length && !argv.find ? fromStdin : fromFiles)();
