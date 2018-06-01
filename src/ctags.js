@@ -1,15 +1,15 @@
 // Based on DoctorJS (https://github.com/drudge/doctorjs/blob/node/jsctags/ctags/writer.js)
 
-var isArray = require('lodash.isarray');
+const isArray = require('lodash.isarray');
 
-var ESCAPES = {
+const ESCAPES = {
   '\\': '\\\\',
   '\n': '\\n',
   '\r': '\\r',
   '\t': '\\t'
 };
 
-var SPECIAL_FIELDS = {
+const SPECIAL_FIELDS = {
   addr: true,
   kind: true,
   name: true,
@@ -19,17 +19,17 @@ var SPECIAL_FIELDS = {
   parent: true
 };
 
-var convert = module.exports = function(tags) {
-  return tags.map(function(tag) {
+const convert = (module.exports = function(tags) {
+  return tags.map(tag => {
     if (isArray(tag)) {
       return convert(tag);
     }
 
-    var buf = [tag.name, '\t', tags.tagfile, '\t'];
+    const buf = [tag.name, '\t', tags.tagfile, '\t'];
     buf.push(tag.addr !== undefined ? tag.addr : '//');
-    var tagfields = [];
+    const tagfields = [];
 
-    Object.keys(tag).forEach(function(key) {
+    Object.keys(tag).forEach(key => {
       if (!SPECIAL_FIELDS[key]) {
         tagfields.push(key);
       }
@@ -42,11 +42,13 @@ var convert = module.exports = function(tags) {
       return buf.join('');
     }
 
-    buf.push(';\"');
+    buf.push(';"');
 
-    if (tag.kind !== undefined) buf.push('\t', tag.kind);
+    if (tag.kind !== undefined) {
+      buf.push('\t', tag.kind);
+    }
 
-    tagfields.forEach(function(tagfield) {
+    tagfields.forEach(tagfield => {
       if (!tag[tagfield]) {
         return;
       }
@@ -56,12 +58,14 @@ var convert = module.exports = function(tags) {
       }
 
       buf.push('\t', tagfield, ':');
-      buf.push(tag[tagfield].replace('[\\\n\r\t]', function(str) {
-        return ESCAPES[str];
-      }));
+      buf.push(
+        tag[tagfield].replace('[\\\n\r\t]', str => {
+          return ESCAPES[str];
+        })
+      );
     });
 
     buf.push('\n');
     return buf.join('');
   });
-};
+});

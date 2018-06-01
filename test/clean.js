@@ -1,14 +1,14 @@
-var glob = require('glob');
-var fs = require('fs');
-var path = require('path');
+const glob = require('glob');
+const fs = require('fs');
+const path = require('path');
 
-var cases = path.join(__dirname, 'cases');
-var examples = path.join(__dirname, '../examples/*.md');
-var jsons = path.join(cases, '*.json');
-var tags = path.join(cases, '*.tags');
+const cases = path.join(__dirname, 'cases');
+const examples = path.join(__dirname, '../examples/*.md');
+const jsons = path.join(cases, '*.json');
+const tags = path.join(cases, '*.tags');
 
-glob.sync(jsons).forEach(function(file) {
-  var json = fs.readFileSync(file, 'utf-8');
+glob.sync(jsons).forEach(file => {
+  let json = fs.readFileSync(file, 'utf-8');
 
   json = json.replace(/\n\s+"id"\:\s+".+",\n/g, '\n');
   json = json.replace(/\n\s+"parent"\:\s+".+",\n/g, '\n');
@@ -16,12 +16,16 @@ glob.sync(jsons).forEach(function(file) {
   fs.writeFileSync(file, json, 'utf-8');
 });
 
-var cleanPath = function(file) {
-  var str = fs.readFileSync(file, 'utf-8').split(/\n/).map(function(line) {
-    return line.replace(cases, '__DIR__');
-  }).join('\n');
+const cleanPath = function(file) {
+  let str = fs
+    .readFileSync(file, 'utf-8')
+    .split(/\n/)
+    .map(line => {
+      return line.replace(cases, '__DIR__');
+    })
+    .join('\n');
 
-  if ((/\.tags$/).test(file)) {
+  if (/\.tags$/.test(file)) {
     str += '\n';
   }
 
