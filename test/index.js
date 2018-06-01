@@ -1,97 +1,106 @@
 require('longjohn');
 
-var async = require('async');
-var format = require('util').format;
-var path = require('path');
-var glob = require('glob');
-var os = require('os');
+const async = require('async');
+const format = require('util').format;
+const path = require('path');
+const glob = require('glob');
+const os = require('os');
 
-var bin = path.join(__dirname, '../bin/jsctags');
-var dir = path.join(__dirname, 'cases');
+const bin = path.join(__dirname, '../bin/jsctags');
+const dir = path.join(__dirname, 'cases');
 
-var run = require('./run')({
-  bin: bin,
-  dir: dir
+const run = require('./run')({
+  bin,
+  dir
 });
 
-var files = [
-  'js',
-  'jsx'
-].reduce(function(sum, ext) {
-  var pattern = format('test/cases/*.%s', ext);
-  return sum.concat(glob.sync(pattern, {
-    nosort: true,
-    silent: true
-  }));
-}, []).map(function(name) {
-  return {
-    name: name,
-    filename: path.resolve(process.cwd(), name)
-  };
-});
-
-async.forEachLimit(files, os.cpus().length, function(f, fn) {
-  async.parallel([
-    async.apply(run, {
-      cmd: f.name,
-      filename: f.filename,
-      ext: '.json'
-    }),
-    async.apply(run, {
-      cmd: format('--file %s', f.name),
-      filename: f.filename,
-      ext: '.json',
-      stdin: true
-    }),
-    async.apply(run, {
-      cmd: format('--find %s', f.name),
-      filename: f.filename,
-      ext: '.json'
-    }),
-    async.apply(run, {
-      cmd: format('%s -f', f.name),
-      filename: f.filename,
-      ext: '.tags'
-    }),
-    async.apply(run, {
-      cmd: format('--file %s -f', f.name),
-      filename: f.filename,
-      ext: '.tags',
-      stdin: true
-    }),
-    async.apply(run, {
-      cmd: format('--find %s -f', f.name),
-      filename: f.filename,
-      ext: '.tags'
-    })
-  ], fn);
-}, function(err) {
-  if (err) {
-    throw err;
-  }
-
-  var names = files.map(function(f) {
-    return f.name;
+const files = ['js', 'jsx']
+  .reduce((sum, ext) => {
+    const pattern = format('test/cases/*.%s', ext);
+    return sum.concat(
+      glob.sync(pattern, {
+        nosort: true,
+        silent: true
+      })
+    );
+  }, [])
+  .map(name => {
+    return {
+      name,
+      filename: path.resolve(process.cwd(), name)
+    };
   });
 
-  async.series([
-    async.apply(run, {
-      name: '~all~ -f',
-      cmd: format('%s -f', names.join(' ')),
-      ext: '.tags'
-    }),
-    async.apply(run, {
-      name: '~all~',
-      cmd: format('%s', names.join(' ')),
-      ext: '.json'
-    }),
-    async.apply(run, {
-      cmd: '--find test/cases/*.js --find test/cases/*.jsx -f',
-      ext: '.tags'
-    }),
-    async.apply(run, {
-      cmd: '--find test/cases/*.js --find test/cases/*.jsx',
-      ext: '.json'
-    })
-  ]);
-});
+async.forEachLimit(
+  files,
+  os.cpus().length,
+  (f, fn) => {
+    async.parallel(
+      [
+        async.apply(run, {
+          cmd: f.name,
+          filename: f.filename,
+          ext: '.json'
+        }),
+        async.apply(run, {
+          cmd: format('--file %s', f.name),
+          filename: f.filename,
+          ext: '.json',
+          stdin: true
+        }),
+        async.apply(run, {
+          cmd: format('--find %s', f.name),
+          filename: f.filename,
+          ext: '.json'
+        }),
+        async.apply(run, {
+          cmd: format('%s -f', f.name),
+          filename: f.filename,
+          ext: '.tags'
+        }),
+        async.apply(run, {
+          cmd: format('--file %s -f', f.name),
+          filename: f.filename,
+          ext: '.tags',
+          stdin: true
+        }),
+        async.apply(run, {
+          cmd: format('--find %s -f', f.name),
+          filename: f.filename,
+          ext: '.tags'
+        })
+      ],
+      fn
+    );
+  },
+  err => {
+    if (err) {
+      throw err;
+    }
+
+    const names = files.map(f => {
+      return f.name;
+    });
+
+    async.series([
+      async.apply(run, {
+        name: '~all~ -f',
+        cmd: format('%s -f', names.join(' ')),
+        ext: '.tags'
+      }),
+      async.apply(run, {
+        name: '~all~',
+        cmd: format('%s', names.join(' ')),
+        ext: '.json'
+      }),
+      async.apply(run, {
+        cmd: '--find test/cases/*.js --find test/cases/*.jsx -f',
+        ext: '.tags'
+      }),
+      async.apply(run, {
+        cmd: '--find test/cases/*.js --find test/cases/*.jsx',
+        ext: '.json'
+      })
+    ]);
+  }
+);

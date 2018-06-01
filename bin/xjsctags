@@ -5,21 +5,26 @@ var cp = require('child_process');
 
 var jsctags = path.join(__dirname, 'jsctags');
 
-var bin = cp.execFile(jsctags, process.argv.shift(), {
-  cwd: process.cwd(),
-  env: process.env
-}, function(err, stderr, stdout) {
-  if (err) {
-    throw err;
-  }
+var bin = cp.execFile(
+  jsctags,
+  process.argv.shift(),
+  {
+    cwd: process.cwd(),
+    env: process.env
+  },
+  function(err, stderr, stdout) {
+    if (err) {
+      throw err;
+    }
 
-  if (stderr) {
-    console.error(stderr);
-  }
+    if (stderr) {
+      console.error(stderr);
+    }
 
-  if (stdout) {
-    console.log(stdout);
+    if (stdout) {
+      console.log(stdout);
+    }
   }
-});
+);
 
 bin.stdin = process.stdin;

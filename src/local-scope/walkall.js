@@ -1,7 +1,7 @@
 // Based on acorn-walkall (https://github.com/sourcegraph/acorn-walkall)
 
 // types is an array of all SpiderMonkey AST node types recognized by acorn.
-var types = exports.types = [
+const types = (exports.types = [
   'ArrayExpression',
   'AssignmentExpression',
   'BinaryExpression',
@@ -58,32 +58,32 @@ var types = exports.types = [
   'WhileStatement',
   'WithStatement',
   'Property'
-];
+]);
 
-// makeVisitors returns an object with a property keyed on each AST node type whose value is c.
+// MakeVisitors returns an object with a property keyed on each AST node type whose value is c.
 exports.makeVisitors = function(c) {
-  var visitors = {};
-  for (var i = 0; i < types.length; ++i) {
-    var type = types[i];
+  const visitors = {};
+  for (let i = 0; i < types.length; ++i) {
+    const type = types[i];
     visitors[type] = c;
   }
   return visitors;
 };
 
-// traverser is an AST visitor that programmatically traverses the AST node by inspecting its object
+// Traverser is an AST visitor that programmatically traverses the AST node by inspecting its object
 // structure (as opposed to following hard-coded paths).
 exports.traverser = function(node, st, c) {
-  var keys = Object.keys(node).sort();
-  for (var i = 0; i < keys.length; ++i) {
-    var key = keys[i];
-    var v = node[key];
+  const keys = Object.keys(node).sort();
+  for (let i = 0; i < keys.length; ++i) {
+    const key = keys[i];
+    const v = node[key];
 
     if (!v) {
       continue;
     }
 
     if (v instanceof Array) {
-      for (var j = 0; j < v.length; ++j) {
+      for (let j = 0; j < v.length; ++j) {
         if (v[j].type) {
           c(v[j], st);
         } else if (typeof v[j] === 'object') {
@@ -96,5 +96,5 @@ exports.traverser = function(node, st, c) {
   }
 };
 
-// traversers is an AST walker that uses the traverser visitor for all AST node types.
+// Traversers is an AST walker that uses the traverser visitor for all AST node types.
 exports.traversers = exports.makeVisitors(exports.traverser);
