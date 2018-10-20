@@ -7,6 +7,7 @@ var path = require('path');
 var glob = require('glob');
 var collect = require('collect-stream');
 var flatten = require('lodash.flatten');
+var get = require('lodash.get');
 var async = require('async');
 var fs = require('fs');
 
@@ -64,7 +65,12 @@ var outputTags = function(tagslist) {
           tag.namespace = tag.namespace.replace(".prototype", "")
         }
         if (tag.type) {
-          tag.type = tag.type.replace(".prototype", "").replace("[?]", "").replace("(?)", "")
+            if (get(tag.origin, ["!data", "isConstructor"]) === true) {
+                tag.kind = "c"
+                tag.type = "class"
+            } else {
+              tag.type = tag.type.replace(".prototype", "").replace("[?]", "").replace("(?)", "")
+            }
         }
         return tag
       }
