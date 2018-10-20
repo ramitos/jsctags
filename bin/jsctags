@@ -54,8 +54,23 @@ var file = (function() {
   });
 })();
 
-var outputTags = function(tags) {
-  var ctags = flatten(jsctags.ctags(tags));
+var outputTags = function(tagslist) {
+  var ctags = flatten(jsctags.ctags(tagslist.map(
+    (tags) => tags.filter(
+      (tag) => !tag.namespace || tag.kind !== "v"
+    ).map(
+      (tag) => {
+        if (tag.namespace) {
+          tag.namespace = tag.namespace.replace(".prototype", "")
+        }
+        if (tag.type) {
+          tag.type = tag.type.replace(".prototype", "").replace("[?]", "").replace("(?)", "")
+        }
+        return tag
+      }
+    )
+  )))
+
   console.log(ctags.join(''));
 };
 
