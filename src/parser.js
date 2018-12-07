@@ -354,7 +354,7 @@ Parser.prototype.onNode = function(name, node, parent) {
   const tag = {
     id: uuid.v1(),
     name,
-    addr: this.addr(node),
+    addr: this.lineno(node),
     kind: this.kind(node),
     type: this.type(node),
     lineno: this.lineno(node),
