@@ -10,13 +10,13 @@ const tags = path.join(cases, '*.tags');
 glob.sync(jsons).forEach(file => {
   let json = fs.readFileSync(file, 'utf-8');
 
-  json = json.replace(/\n\s+"id"\:\s+".+",\n/g, '\n');
-  json = json.replace(/\n\s+"parent"\:\s+".+",\n/g, '\n');
+  json = json.replace(/\n\s+"id":\s+".+",\n/g, '\n');
+  json = json.replace(/\n\s+"parent":\s+".+",\n/g, '\n');
 
   fs.writeFileSync(file, json, 'utf-8');
 });
 
-const cleanPath = function(file) {
+const cleanPath = function (file) {
   let str = fs
     .readFileSync(file, 'utf-8')
     .split(/\n/)

@@ -1,18 +1,18 @@
 #!/usr/bin/env node
 
-var format = require('util').format;
-var forceArray = require('force-array');
-var argv = require('optimist').argv;
-var path = require('path');
-var glob = require('glob');
-var collect = require('collect-stream');
-var flatten = require('lodash.flatten');
-var async = require('async');
-var fs = require('fs');
+const format = require('util').format;
+const forceArray = require('force-array');
+const argv = require('optimist').argv;
+const path = require('path');
+const glob = require('glob');
+const collect = require('collect-stream');
+const flatten = require('lodash.flatten');
+const async = require('async');
+const fs = require('fs');
 
-var jsctags = require('../');
+const jsctags = require('../');
 
-var dir = (function() {
+const dir = (function () {
   if (argv.dir) {
     return path.resolve(argv.dir);
   }
@@ -28,7 +28,7 @@ var dir = (function() {
   return '///null';
 })();
 
-var file = (function() {
+const file = (function () {
   if (argv.file) {
     return path.resolve(process.cwd(), argv.file);
   }
@@ -37,40 +37,40 @@ var file = (function() {
     return format('///null/%s', Math.floor(Math.random() * 100));
   }
 
-  var find = forceArray(argv.find);
-  var files = !find.length
-    ? argv._
-    : find.reduce(function(files, pattern) {
-        return files.concat(
-          glob.sync(pattern, {
-            nosort: true,
-            silent: true
-          })
-        );
-      }, []);
+  const find = forceArray(argv.find);
+  const files = find.length ?
+    find.reduce((files, pattern) => {
+      return files.concat(
+        glob.sync(pattern, {
+          nosort: true,
+          silent: true
+        })
+      );
+    }, []) :
+    argv._;
 
-  return files.map(function(file) {
+  return files.map(file => {
     return path.resolve(process.cwd(), file);
   });
 })();
 
-var outputTags = function(tags) {
-  var ctags = flatten(jsctags.ctags(tags));
+const outputTags = function (tags) {
+  const ctags = flatten(jsctags.ctags(tags));
   console.log(ctags.join(''));
 };
 
-var outputJSON = function(tags) {
+const outputJSON = function (tags) {
   console.log(JSON.stringify(flatten(forceArray(tags)), null, 2));
 };
 
-var onResults = function(err, results) {
+const onResults = function (err, results) {
   if (err) {
     throw err;
   }
 
-  var fn = argv.f ? outputTags : outputJSON;
+  const fn = argv.f ? outputTags : outputJSON;
 
-  var tags = results.filter(function(res) {
+  const tags = results.filter(res => {
     if (res instanceof Error) {
       console.error(err);
       return false;
@@ -84,14 +84,14 @@ var onResults = function(err, results) {
   fn(tags);
 };
 
-var parse = function(ctx, fn) {
-  jsctags(ctx, function(err, tags) {
+const parse = function (ctx, fn) {
+  jsctags(ctx, (err, tags) => {
     if (err) {
       return fn(err);
     }
 
     tags.tagfile = ctx.file;
-    tags.forEach(function(tag) {
+    tags.forEach(tag => {
       tag.tagfile = ctx.file;
     });
 
@@ -99,8 +99,8 @@ var parse = function(ctx, fn) {
   });
 };
 
-var fromStdin = function() {
-  collect(process.stdin, function(err, content) {
+const fromStdin = function () {
+  collect(process.stdin, (err, content) => {
     if (err) {
       throw err;
     }
@@ -111,30 +111,30 @@ var fromStdin = function() {
 
     parse(
       {
-        file: file,
-        dir: dir,
-        content: content
+        file,
+        dir,
+        content
       },
       onResults
     );
   });
 };
 
-var fromFiles = function() {
-  var files = Array.isArray(file) ? file : [file];
+const fromFiles = function () {
+  const files = Array.isArray(file) ? file : [file];
   async.map(
     files,
-    function(file, fn) {
-      fs.readFile(file, 'utf8', function(err, content) {
+    (file, fn) => {
+      fs.readFile(file, 'utf8', (err, content) => {
         if (err) {
           return fn(null, err);
         }
 
         parse(
           {
-            file: file,
-            dir: dir,
-            content: content
+            file,
+            dir,
+            content
           },
           fn
         );

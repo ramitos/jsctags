@@ -28,7 +28,7 @@
   },
   "scripts": {
     "test": "NODE_ENV=test nyc node test",
-    "lint": "eslint . --fix",
+    "lint": "eslint . bin/* --fix",
     "coverage": "nyc report --reporter=text-lcov | codeclimate-test-reporter"
   },
   "dependencies": {

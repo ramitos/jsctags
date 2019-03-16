@@ -16,7 +16,7 @@ const walkall = require('./walkall');
 // of a given definition. I.e., if you use tern to ask for the definition of
 // some symbol, and it gives you an Identifier, you can use findDefinitionNode
 // to find the definition value of the Identifier.
-exports.findDefinitionNode = function(ast, start, end) {
+exports.findDefinitionNode = function (ast, start, end) {
   const origin = exports.findOriginPseudonode(ast, start, end);
 
   if (!origin) {
@@ -45,7 +45,7 @@ exports.findDefinitionNode = function(ast, start, end) {
 //
 // This mapping is intended to correspond to the mapping between a tern defs
 // JSON file !span and the names/paths of keys pointing to that !span.
-exports.findNameNodes = function(ast, start, end) {
+exports.findNameNodes = function (ast, start, end) {
   let def = walk.findNodeAt(ast, start, end, null, walkall.traversers);
 
   if (!def) {
@@ -58,7 +58,7 @@ exports.findNameNodes = function(ast, start, end) {
 
   // When we search for the enclosing node, we don't want to just end up with
   // the def node itself, so exclude it (node != def).
-  const test = function(type, node) {
+  const test = function (type, node) {
     return (
       (def.type === 'FunctionDeclaration' && type === 'FunctionDeclaration') ||
       (node !== def &&
@@ -80,6 +80,8 @@ exports.findNameNodes = function(ast, start, end) {
     );
   }
 
+  let prop = null;
+
   enc = enc.node;
   switch (enc.type) {
     case 'AssignmentExpression':
@@ -100,7 +102,7 @@ exports.findNameNodes = function(ast, start, end) {
 
       break;
     case 'ObjectExpression':
-      const prop = findPropInObjectExpressionByValuePos(enc, start, end);
+      prop = findPropInObjectExpressionByValuePos(enc, start, end);
 
       if (!prop) {
         throw new Error(
@@ -114,8 +116,27 @@ exports.findNameNodes = function(ast, start, end) {
       return [prop.key];
     case 'VariableDeclarator':
       return [enc.id];
+
+    default:
   }
 };
+
+// IdentOrLiteralString takes an AST node whose type is either Identifier or
+// Literal and returns the Identifier name or Literal string value. It is
+// useful when you have a name node in an ObjectExpression property or
+// MemberExpression property, which could be either an Identifier or Literal,
+// and you just want to extract the string name.
+const identOrLiteralString = function (n) {
+  if (n.type === 'Identifier') {
+    return n.name;
+  }
+
+  if (n.type === 'Literal' && typeof n.value === 'string') {
+    return n.value;
+  }
+};
+
+exports.identOrLiteralString = identOrLiteralString;
 
 // FindOriginPseudonode finds the AST node or node-like object of the
 // declaration/definition that encloses the Identifier AST node with the
@@ -124,7 +145,7 @@ exports.findNameNodes = function(ast, start, end) {
 // This function returns ObjectExpression property objects if the Identifier is
 // an ObjectExpression property key. These objects are not true AST nodes (thus
 // the "pseudonode" description).
-exports.findOriginPseudonode = function(ast, start, end) {
+exports.findOriginPseudonode = function (ast, start, end) {
   let nameNode = walk.findNodeAt(
     ast,
     start,
@@ -196,11 +217,13 @@ exports.findOriginPseudonode = function(ast, start, end) {
       return findPropInObjectExpressionByKeyPos(enc, start, end);
     case 'VariableDeclarator':
       return enc;
+
+    default:
   }
 };
 
 function okNodeTypes(types) {
-  return function(_t) {
+  return function (_t) {
     return types.indexOf(_t) !== -1;
   };
 }
@@ -254,7 +277,7 @@ function collectChainedAssignmentNames(ast, expr, seen) {
   seen.push(expr);
 
   // Traverse to parent AssignmentExpressions to return all names in chained assignments.
-  const test = function(type, node) {
+  const test = function (type, node) {
     return (
       seen.indexOf(node) === -1 &&
       ((type === 'AssignmentExpression' && node.right === expr) ||
@@ -272,18 +295,3 @@ function collectChainedAssignmentNames(ast, expr, seen) {
 
   return names;
 }
-
-// IdentOrLiteralString takes an AST node whose type is either Identifier or
-// Literal and returns the Identifier name or Literal string value. It is
-// useful when you have a name node in an ObjectExpression property or
-// MemberExpression property, which could be either an Identifier or Literal,
-// and you just want to extract the string name.
-const identOrLiteralString = (exports.identOrLiteralString = function(n) {
-  if (n.type === 'Identifier') {
-    return n.name;
-  }
-
-  if (n.type === 'Literal' && typeof n.value === 'string') {
-    return n.value;
-  }
-});
