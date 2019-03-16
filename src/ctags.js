@@ -19,14 +19,14 @@ const SPECIAL_FIELDS = {
   parent: true
 };
 
-const convert = (module.exports = function(tags) {
+const convert = function (tags) {
   return tags.map(tag => {
     if (isArray(tag)) {
       return convert(tag);
     }
 
     const buf = [tag.name, '\t', tags.tagfile, '\t'];
-    buf.push(tag.addr !== undefined ? tag.addr : '//');
+    buf.push(tag.addr === undefined ? '//' : tag.addr);
     const tagfields = [];
 
     Object.keys(tag).forEach(key => {
@@ -68,4 +68,6 @@ const convert = (module.exports = function(tags) {
     buf.push('\n');
     return buf.join('');
   });
-});
+};
+
+module.exports = convert;

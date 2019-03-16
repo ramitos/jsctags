@@ -13,7 +13,7 @@ const infer = require('tern/lib/infer');
 const defnode = require('./defnode');
 const walkall = require('./walkall');
 
-const joinPaths = function(a, b) {
+const joinPaths = function (a, b) {
   if (a) {
     return a + '.' + b;
   }
@@ -21,14 +21,14 @@ const joinPaths = function(a, b) {
   return b;
 };
 
-const getId = function(n) {
+const getId = function (n) {
   return format('%d-%d', n.start, n.end);
 };
 
-const postCondenseReach = function(server, options, state) {
+const postCondenseReach = function (server, options, state) {
   const seenSpans = {};
 
-  const visitScope = function(state, scope, path) {
+  const visitScope = function (state, scope, path) {
     // Detect cycles
     if (scope._localScopeCondenseSeen) {
       return;
@@ -39,11 +39,11 @@ const postCondenseReach = function(server, options, state) {
     Object.keys(get(scope, 'props', {}))
       .sort()
       .forEach(prop => {
-        visitAVal(state, scope.props[prop], joinPaths(path, prop));
+        visitAVal(state, scope.props[prop], joinPaths(path, prop)); // eslint-disable-line no-use-before-define
       });
   };
 
-  const visitNode = function(state, node, path) {
+  const visitNode = function (state, node, path) {
     if (!node) {
       return;
     }
@@ -75,19 +75,19 @@ const postCondenseReach = function(server, options, state) {
     );
   };
 
-  const isArg = function(state, av) {
+  const isArg = function (state, av) {
     return get(av, 'propertyOf.fnType.args', []).some(arg => {
       return arg.propertyName === av.propertyName;
     });
   };
 
-  const isScoped = function(state, av) {
+  const isScoped = function (state, av) {
     const g = av.path === '<top>' || isUndefined(get(av, 'propertyOf.isBlock'));
 
     return g ? false : isArg(state, av);
   };
 
-  const getType = function(state, av, proto) {
+  const getType = function (state, av) {
     const types = get(av, 'types', []).map(type => {
       return get(type, 'proto.name');
     });
@@ -103,11 +103,11 @@ const postCondenseReach = function(server, options, state) {
     return single;
   };
 
-  const isConstructor = function(state, type) {
+  const isConstructor = function (state, type) {
     return !isUndefined(get(type, 'props.prototype'));
   };
 
-  const visitAVal = function(state, av, path) {
+  const visitAVal = function (state, av, path) {
     if (av._localScopeCondenseSeen) {
       return;
     }
@@ -152,7 +152,8 @@ const postCondenseReach = function(server, options, state) {
 
     const node = av.originNode;
     const ast = node.sourceFile.ast;
-    let defNode, type;
+    let defNode;
+    let type;
 
     try {
       type = infer.expressionType({

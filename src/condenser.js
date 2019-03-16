@@ -10,7 +10,7 @@ const once = require('once');
 require('tern-jsx');
 require('./local-scope');
 
-const config = function(dir, file) {
+const config = function (dir, file) {
   const config = tryor(() => {
     return fs.readFileSync(path.join(dir, '.tern-project'), 'utf8');
   }, '{}');
@@ -24,7 +24,7 @@ const config = function(dir, file) {
   };
 
   const plugins = {
-    doc_comment: true,
+    doc_comment: true, // eslint-disable-line camelcase
     'local-scope': true
   };
 
@@ -35,7 +35,7 @@ const config = function(dir, file) {
   });
 };
 
-const defs = function(libs) {
+const defs = function (libs) {
   const base = path.resolve(__dirname, '../node_modules/tern/defs');
 
   return libs
@@ -47,13 +47,15 @@ const defs = function(libs) {
       if (fs.existsSync(file)) {
         return require(file);
       }
+
+      return null;
     })
     .filter(lib => {
       return Boolean(lib);
     });
 };
 
-const server = function(config, dir) {
+const server = function (config, dir) {
   const base = path.resolve(__dirname, '../node_modules/tern/plugin');
 
   Object.keys(config.plugins).forEach(plugin => {
@@ -61,9 +63,8 @@ const server = function(config, dir) {
 
     if (fs.existsSync(file)) {
       return require(file);
-    } else {
-      return tryor(require.bind(require, 'tern-' + plugin));
     }
+    return tryor(require.bind(require, 'tern-' + plugin));
   });
 
   return new tern.Server({
@@ -74,10 +75,10 @@ const server = function(config, dir) {
   });
 };
 
-module.exports = function(options, fn) {
+module.exports = function (options, fn) {
   const __fn = once(fn);
 
-  const _fn = function(err, tags) {
+  const _fn = function (err, tags) {
     if (err) {
       return __fn(err);
     }
