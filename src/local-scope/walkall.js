@@ -1,7 +1,7 @@
 // Based on acorn-walkall (https://github.com/sourcegraph/acorn-walkall)
 
 // types is an array of all SpiderMonkey AST node types recognized by acorn.
-const types = (exports.types = [
+const types = [
   'ArrayExpression',
   'AssignmentExpression',
   'BinaryExpression',
@@ -57,22 +57,25 @@ const types = (exports.types = [
   'VariableDeclarator',
   'WhileStatement',
   'WithStatement',
-  'Property'
-]);
+  'Property',
+];
+
+exports.types = types;
 
 // MakeVisitors returns an object with a property keyed on each AST node type whose value is c.
-exports.makeVisitors = function(c) {
+exports.makeVisitors = function (c) {
   const visitors = {};
   for (let i = 0; i < types.length; ++i) {
     const type = types[i];
     visitors[type] = c;
   }
+
   return visitors;
 };
 
 // Traverser is an AST visitor that programmatically traverses the AST node by inspecting its object
 // structure (as opposed to following hard-coded paths).
-exports.traverser = function(node, st, c) {
+exports.traverser = function (node, st, c) {
   const keys = Object.keys(node).sort();
   for (let i = 0; i < keys.length; ++i) {
     const key = keys[i];

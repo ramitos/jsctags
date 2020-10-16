@@ -1,7 +1,6 @@
 // Based on defnode.js (https://github.com/sourcegraph/defnode.js)
 
-const walk = require('acorn/dist/walk');
-
+const walk = require('acorn-walk');
 const walkall = require('./walkall');
 
 // FindDefinitionNode takes the start/end position of an Identifier node and
@@ -16,7 +15,7 @@ const walkall = require('./walkall');
 // of a given definition. I.e., if you use tern to ask for the definition of
 // some symbol, and it gives you an Identifier, you can use findDefinitionNode
 // to find the definition value of the Identifier.
-exports.findDefinitionNode = function(ast, start, end) {
+exports.findDefinitionNode = function (ast, start, end) {
   const origin = exports.findOriginPseudonode(ast, start, end);
 
   if (!origin) {
@@ -45,12 +44,12 @@ exports.findDefinitionNode = function(ast, start, end) {
 //
 // This mapping is intended to correspond to the mapping between a tern defs
 // JSON file !span and the names/paths of keys pointing to that !span.
-exports.findNameNodes = function(ast, start, end) {
+exports.findNameNodes = function (ast, start, end) {
   let def = walk.findNodeAt(ast, start, end, null, walkall.traversers);
 
   if (!def) {
     throw new Error(
-      'No definition node found at position ' + start + '-' + end
+      'No definition node found at position ' + start + '-' + end,
     );
   }
 
@@ -58,7 +57,7 @@ exports.findNameNodes = function(ast, start, end) {
 
   // When we search for the enclosing node, we don't want to just end up with
   // the def node itself, so exclude it (node != def).
-  const test = function(type, node) {
+  const test = function (type, node) {
     return (
       (def.type === 'FunctionDeclaration' && type === 'FunctionDeclaration') ||
       (node !== def &&
@@ -67,7 +66,7 @@ exports.findNameNodes = function(ast, start, end) {
           'FunctionDeclaration',
           'FunctionExpression',
           'ObjectExpression',
-          'VariableDeclarator'
+          'VariableDeclarator',
         ].indexOf(type) !== -1)
     );
   };
@@ -76,7 +75,7 @@ exports.findNameNodes = function(ast, start, end) {
 
   if (!enc) {
     throw new Error(
-      'No enclosing declaration node found for definition at position ' + end
+      'No enclosing declaration node found for definition at position ' + end,
     );
   }
 
@@ -100,6 +99,7 @@ exports.findNameNodes = function(ast, start, end) {
 
       break;
     case 'ObjectExpression':
+      // eslint-disable-next-line no-case-declarations
       const prop = findPropInObjectExpressionByValuePos(enc, start, end);
 
       if (!prop) {
@@ -107,7 +107,7 @@ exports.findNameNodes = function(ast, start, end) {
           'No property found for ObjectExpression value at position ' +
             start +
             '-' +
-            end
+            end,
         );
       }
 
@@ -124,13 +124,13 @@ exports.findNameNodes = function(ast, start, end) {
 // This function returns ObjectExpression property objects if the Identifier is
 // an ObjectExpression property key. These objects are not true AST nodes (thus
 // the "pseudonode" description).
-exports.findOriginPseudonode = function(ast, start, end) {
+exports.findOriginPseudonode = function (ast, start, end) {
   let nameNode = walk.findNodeAt(
     ast,
     start,
     end,
     okNodeTypes(['Identifier', 'Literal']),
-    walkall.traversers
+    walkall.traversers,
   );
 
   if (!nameNode) {
@@ -148,9 +148,9 @@ exports.findOriginPseudonode = function(ast, start, end) {
       'FunctionDeclaration',
       'FunctionExpression',
       'ObjectExpression',
-      'VariableDeclarator'
+      'VariableDeclarator',
     ]),
-    walkall.traversers
+    walkall.traversers,
   );
 
   if (!enc) {
@@ -158,7 +158,7 @@ exports.findOriginPseudonode = function(ast, start, end) {
       'No enclosing declaration node found for Identifier at position ' +
         start +
         '-' +
-        end
+        end,
     );
   }
 
@@ -186,6 +186,7 @@ exports.findOriginPseudonode = function(ast, start, end) {
         // The ident is the function name
         return enc;
       }
+
       if (enc.params.indexOf(nameNode) !== -1) {
         // The ident is a function param
         return nameNode;
@@ -200,7 +201,7 @@ exports.findOriginPseudonode = function(ast, start, end) {
 };
 
 function okNodeTypes(types) {
-  return function(_t) {
+  return function (_t) {
     return types.indexOf(_t) !== -1;
   };
 }
@@ -230,6 +231,7 @@ function rightmostExprOfAssignment(assignmentExpr) {
   while (assignmentExpr.type === 'AssignmentExpression') {
     assignmentExpr = assignmentExpr.right;
   }
+
   return assignmentExpr;
 }
 
@@ -254,7 +256,7 @@ function collectChainedAssignmentNames(ast, expr, seen) {
   seen.push(expr);
 
   // Traverse to parent AssignmentExpressions to return all names in chained assignments.
-  const test = function(type, node) {
+  const test = function (type, node) {
     return (
       seen.indexOf(node) === -1 &&
       ((type === 'AssignmentExpression' && node.right === expr) ||
@@ -264,9 +266,10 @@ function collectChainedAssignmentNames(ast, expr, seen) {
 
   const outer = walk.findNodeAround(ast, expr.end, test, walkall.traversers);
   if (outer) {
+    // eslint-disable-next-line prefer-spread
     names.push.apply(
       names,
-      collectChainedAssignmentNames(ast, outer.node, seen)
+      collectChainedAssignmentNames(ast, outer.node, seen),
     );
   }
 
@@ -278,7 +281,7 @@ function collectChainedAssignmentNames(ast, expr, seen) {
 // useful when you have a name node in an ObjectExpression property or
 // MemberExpression property, which could be either an Identifier or Literal,
 // and you just want to extract the string name.
-const identOrLiteralString = (exports.identOrLiteralString = function(n) {
+const identOrLiteralString = function (n) {
   if (n.type === 'Identifier') {
     return n.name;
   }
@@ -286,4 +289,6 @@ const identOrLiteralString = (exports.identOrLiteralString = function(n) {
   if (n.type === 'Literal' && typeof n.value === 'string') {
     return n.value;
   }
-});
+};
+
+exports.identOrLiteralString = identOrLiteralString;

@@ -1,7 +1,5 @@
 # jsctags
 
-[![](https://img.shields.io/travis/ramitos/jsctags.svg)](https://travis-ci.org/ramitos/jsctags) [![](https://img.shields.io/codeclimate/coverage/github/ramitos/jsctags.svg)](https://codeclimate.com/github/ramitos/jsctags/coverage) [![](https://img.shields.io/npm/v/jsctags.svg)](https://www.npmjs.com/package/jsctags) [![](https://img.shields.io/david/ramitos/jsctags.svg)](https://david-dm.org/ramitos/jsctags) [![](https://img.shields.io/codeclimate/github/ramitos/jsctags.svg)](https://codeclimate.com/github/ramitos/jsctags) [![](https://img.shields.io/npm/l/jsctags.svg)](https://www.npmjs.com/package/jsctags)
-
 jsctags generator using [tern](https://github.com/marijnh/tern)
 
 ## install
@@ -9,14 +7,14 @@ jsctags generator using [tern](https://github.com/marijnh/tern)
 For access to the binary:
 
 ```sh
-npm install -g git+https://github.com/ramitos/jsctags.git
+npm install -g git+https://github.com/sergioramos/jsctags.git
 ```
 
 Otherwise, add to your project's package.json under dependencies or
 dev-dependencies:
 
 ```json
-"jsctags": "git://github.com/ramitos/jsctags.git"
+"jsctags": "git://github.com/sergioramos/jsctags.git"
 ```
 
 ## usage
@@ -39,7 +37,7 @@ const file = '/path/to/file.js';
 const dir = '/path/to/';
 const content = fs.readFileSync(file, 'utf8');
 
-jsctags(file, dir, content, function(e, tags) {
+jsctags(file, dir, content, function (e, tags) {
   console.log(tags);
 });
 ```
@@ -60,67 +58,67 @@ find . -type f -iregex ".*\.js$" -exec jsctags {} -f \; | sed '/^$/d' | LANG=C s
 
 ## examples
 
-* [arguments](examples/arguments.md)
-* [array_holes](examples/array_holes.md)
-* [arrow](examples/arrow.md)
-* [autothis](examples/autothis.md)
-* [bind](examples/bind.md)
-* [block_scope](examples/block_scope.md)
-* [blowup](examples/blowup.md)
-* [browser](examples/browser.md)
-* [builtins](examples/builtins.md)
-* [catch_error](examples/catch_error.md)
-* [cautiouspropagation](examples/cautiouspropagation.md)
-* [class](examples/class.md)
-* [computedprop](examples/computedprop.md)
-* [contextcomplete](examples/contextcomplete.md)
-* [copyprops](examples/copyprops.md)
-* [ctorpattern](examples/ctorpattern.md)
-* [defineProperty](examples/defineProperty.md)
-* [destructure](examples/destructure.md)
-* [docstrings](examples/docstrings.md)
-* [effects](examples/effects.md)
-* [empty_overridden_prop](examples/empty_overridden_prop.md)
-* [es6-features](examples/es6-features.md)
-* [extends](examples/extends.md)
-* [finddef](examples/finddef.md)
-* [findref](examples/findref.md)
-* [fn_arguments](examples/fn_arguments.md)
-* [for_of](examples/for_of.md)
-* [generate](examples/generate.sh)
-* [generator](examples/generator.md)
-* [generic_each](examples/generic_each.md)
-* [getter](examples/getter.md)
-* [global_this](examples/global_this.md)
-* [hint-objlit](examples/hint-objlit.md)
-* [hint_browser](examples/hint_browser.md)
-* [hint_ecma5](examples/hint_ecma5.md)
-* [hint_simple](examples/hint_simple.md)
-* [indirect_class](examples/indirect_class.md)
-* [infinite-expansion](examples/infinite-expansion.md)
-* [jsdoc](examples/jsdoc.md)
-* [map](examples/map.md)
-* [merge](examples/merge.md)
-* [mixin](examples/mixin.md)
-* [new_array](examples/new_array.md)
-* [new_to_prototype](examples/new_to_prototype.md)
-* [object_create](examples/object_create.md)
-* [objectlit](examples/objectlit.md)
-* [objnames](examples/objnames.md)
-* [order_of_definition](examples/order_of_definition.md)
-* [phantom_object](examples/phantom_object.md)
-* [plus](examples/plus.md)
-* [promise](examples/promise.md)
-* [proto](examples/proto.md)
-* [protoname](examples/protoname.md)
-* [react](examples/react.md)
-* [replace_bogus_prop](examples/replace_bogus_prop.md)
-* [set](examples/set.md)
-* [simple](examples/simple.md)
-* [simple_generic](examples/simple_generic.md)
-* [super](examples/super.md)
-* [symbol](examples/symbol.md)
-* [template](examples/template.md)
+- [arguments](test/fixtures/arguments.js)
+- [array_holes](test/fixtures/array_holes.js)
+- [arrow](test/fixtures/arrow.js)
+- [autothis](test/fixtures/autothis.js)
+- [bind](test/fixtures/bind.js)
+- [block_scope](test/fixtures/block_scope.js)
+- [blowup](test/fixtures/blowup.js)
+- [browser](test/fixtures/browser.js)
+- [builtins](test/fixtures/builtins.js)
+- [catch_error](test/fixtures/catch_error.js)
+- [cautiouspropagation](test/fixtures/cautiouspropagation.js)
+- [class](test/fixtures/class.js)
+- [computedprop](test/fixtures/computedprop.js)
+- [contextcomplete](test/fixtures/contextcomplete.js)
+- [copyprops](test/fixtures/copyprops.js)
+- [ctorpattern](test/fixtures/ctorpattern.js)
+- [defineProperty](test/fixtures/defineProperty.js)
+- [destructure](test/fixtures/destructure.js)
+- [docstrings](test/fixtures/docstrings.js)
+- [effects](test/fixtures/effects.js)
+- [empty_overridden_prop](test/fixtures/empty_overridden_prop.js)
+- [es6-features](test/fixtures/es6.js.md)
+- [extends](test/fixtures/extends.js)
+- [finddef](test/fixtures/finddef.js)
+- [findref](test/fixtures/findref.js)
+- [fn_arguments](test/fixtures/fn_arguments.js)
+- [for_of](test/fixtures/for_of.js)
+- [generate](test/fixtures/generate.js)
+- [generator](test/fixtures/generator.js)
+- [generic_each](test/fixtures/generic_each.js)
+- [getter](test/fixtures/getter.js)
+- [global_this](test/fixtures/global_this.js)
+- [hint-objlit](test/fixtures/hint.js.md)
+- [hint_browser](test/fixtures/hint_browser.js)
+- [hint_ecma5](test/fixtures/hint_ecma5.js)
+- [hint_simple](test/fixtures/hint_simple.js)
+- [indirect_class](test/fixtures/indirect_class.js)
+- [infinite-expansion](test/fixtures/infinite.js.md)
+- [jsdoc](test/fixtures/jsdoc.js)
+- [map](test/fixtures/map.js)
+- [merge](test/fixtures/merge.js)
+- [mixin](test/fixtures/mixin.js)
+- [new_array](test/fixtures/new_array.js)
+- [new_to_prototype](test/fixtures/new_to_prototype.js)
+- [object_create](test/fixtures/object_create.js)
+- [objectlit](test/fixtures/objectlit.js)
+- [objnames](test/fixtures/objnames.js)
+- [order_of_definition](test/fixtures/order_of_definition.js)
+- [phantom_object](test/fixtures/phantom_object.js)
+- [plus](test/fixtures/plus.js)
+- [promise](test/fixtures/promise.js)
+- [proto](test/fixtures/proto.js)
+- [protoname](test/fixtures/protoname.js)
+- [react](test/fixtures/react.js)
+- [replace_bogus_prop](test/fixtures/replace_bogus_prop.js)
+- [set](test/fixtures/set.js)
+- [simple](test/fixtures/simple.js)
+- [simple_generic](test/fixtures/simple_generic.js)
+- [super](test/fixtures/super.js)
+- [symbol](test/fixtures/symbol.js)
+- [template](test/fixtures/template.js)
 
 ## license
 

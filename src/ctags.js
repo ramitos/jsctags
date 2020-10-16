@@ -6,7 +6,7 @@ const ESCAPES = {
   '\\': '\\\\',
   '\n': '\\n',
   '\r': '\\r',
-  '\t': '\\t'
+  '\t': '\\t',
 };
 
 const SPECIAL_FIELDS = {
@@ -16,20 +16,21 @@ const SPECIAL_FIELDS = {
   tagfile: true,
   origin: true,
   id: true,
-  parent: true
+  parent: true,
 };
 
-const convert = (module.exports = function(tags) {
-  return tags.map(tag => {
+const convert = function (tags) {
+  return tags.map((tag) => {
     if (isArray(tag)) {
       return convert(tag);
     }
 
     const buf = [tag.name, '\t', tags.tagfile, '\t'];
+    // eslint-disable-next-line no-negated-condition
     buf.push(tag.addr !== undefined ? tag.addr : '//');
     const tagfields = [];
 
-    Object.keys(tag).forEach(key => {
+    Object.keys(tag).forEach((key) => {
       if (!SPECIAL_FIELDS[key]) {
         tagfields.push(key);
       }
@@ -48,7 +49,7 @@ const convert = (module.exports = function(tags) {
       buf.push('\t', tag.kind);
     }
 
-    tagfields.forEach(tagfield => {
+    tagfields.forEach((tagfield) => {
       if (!tag[tagfield]) {
         return;
       }
@@ -59,13 +60,15 @@ const convert = (module.exports = function(tags) {
 
       buf.push('\t', tagfield, ':');
       buf.push(
-        tag[tagfield].replace('[\\\n\r\t]', str => {
+        tag[tagfield].replace('[\\\n\r\t]', (str) => {
           return ESCAPES[str];
-        })
+        }),
       );
     });
 
     buf.push('\n');
     return buf.join('');
   });
-});
+};
+
+module.exports = convert;

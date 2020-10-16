@@ -1,5 +1,5 @@
 const condense = require('tern/lib/condense');
-const format = require('util').format;
+const { format } = require('util');
 const merge = require('deepmerge');
 const tryor = require('tryor');
 const path = require('path');
@@ -7,10 +7,10 @@ const tern = require('tern');
 const fs = require('fs');
 const once = require('once');
 
-require('tern-jsx');
+require('./tern-jsx');
 require('./local-scope');
 
-const config = function(dir, file) {
+const config = function (dir, file) {
   const config = tryor(() => {
     return fs.readFileSync(path.join(dir, '.tern-project'), 'utf8');
   }, '{}');
@@ -19,65 +19,66 @@ const config = function(dir, file) {
 
   const confs = {
     jsx: {
-      jsx: {}
-    }
+      jsx: {},
+    },
   };
 
   const plugins = {
     doc_comment: true,
-    'local-scope': true
+    'local-scope': true,
   };
 
   return merge(JSON.parse(config), {
     libs: ['browser', 'ecmascript'],
     loadEagerly: false,
-    plugins: merge(plugins, confs[extname] || {})
+    plugins: merge(plugins, confs[extname] || {}),
   });
 };
 
-const defs = function(libs) {
+const defs = function (libs) {
   const base = path.resolve(__dirname, '../node_modules/tern/defs');
 
   return libs
-    .map(lib => {
+    .map((lib) => {
       if (!/\.json$/.test(lib)) {
         lib += '.json';
       }
+
       const file = path.join(base, lib);
       if (fs.existsSync(file)) {
         return require(file);
       }
     })
-    .filter(lib => {
+    .filter((lib) => {
       return Boolean(lib);
     });
 };
 
-const server = function(config, dir) {
+const server = function (config, dir) {
   const base = path.resolve(__dirname, '../node_modules/tern/plugin');
 
-  Object.keys(config.plugins).forEach(plugin => {
+  Object.keys(config.plugins).forEach((plugin) => {
     const file = path.join(base, format('%s.js', plugin));
 
     if (fs.existsSync(file)) {
       return require(file);
-    } else {
-      return tryor(require.bind(require, 'tern-' + plugin));
     }
+
+    return tryor(require.bind(require, 'tern-' + plugin));
   });
 
   return new tern.Server({
     async: false,
     defs: defs(config.libs),
     plugins: config.plugins,
-    projectDir: dir
+    projectDir: dir,
   });
 };
 
-module.exports = function(options, fn) {
+module.exports = function (options, fn) {
   const __fn = once(fn);
 
-  const _fn = function(err, tags) {
+  const _fn = function (err, tags) {
     if (err) {
       return __fn(err);
     }
@@ -99,16 +100,16 @@ module.exports = function(options, fn) {
         {
           name: filename,
           text: options.content,
-          type: 'full'
-        }
-      ]
+          type: 'full',
+        },
+      ],
     },
-    err => {
+    (err) => {
       _fn(err);
-    }
+    },
   );
 
-  options.server.flush(err => {
+  options.server.flush((err) => {
     if (err) {
       return _fn(err);
     }
@@ -117,8 +118,8 @@ module.exports = function(options, fn) {
       null,
       condense.condense(filename, filename, {
         spans: true,
-        server: options.server
-      })
+        server: options.server,
+      }),
     );
   });
 };

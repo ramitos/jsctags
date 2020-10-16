@@ -10,9 +10,9 @@ var bin = cp.execFile(
   process.argv.shift(),
   {
     cwd: process.cwd(),
-    env: process.env
+    env: process.env,
   },
-  function(err, stderr, stdout) {
+  function (err, stderr, stdout) {
     if (err) {
       throw err;
     }
@@ -24,7 +24,7 @@ var bin = cp.execFile(
     if (stdout) {
       console.log(stdout);
     }
-  }
+  },
 );
 
 bin.stdin = process.stdin;

@@ -1,0 +1,51 @@
+name: Continuous Updates
+
+on:
+  push:
+    branches: [ dependabot/npm_and_yarn/** ]
+  pull_request:
+    types: [opened, synchronize, reopened]
+    branches: [ dependabot/npm_and_yarn/** ]
+
+jobs:
+  update-manifests:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: technote-space/auto-cancel-redundant-job@v1
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 20
+        persist-credentials: false
+    - name: Setup Node.js
+      uses: actions/setup-node@v2.1.1
+      with:
+        node-version: '14.x'
+    - name: Config Git
+      run: |
+        git config --global user.name '${{ github.event.commits[0].author.name }}'
+        git config --global user.email '${{ github.event.commits[0].author.email }}'
+    - name: Fix yarn.lock
+      run: |
+        # get current branch
+        echo ::set-env name=GITHUB_REF_SLUG::"$(git branch --show-current)"
+        # revert changes to yarn.lock
+        git checkout ${{ github.sha }}^ -- yarn.lock
+        # IF only yarn.lock changed, update package.json too
+        git diff --name-only HEAD^ HEAD | grep -q 'package.json' || yarn up `git log -1 --pretty=%s | awk '{ print $3 }'`
+        # regardless, run yarn to update yarn.lock
+        yarn
+        # stage package.json and yarn.lock
+        git add yarn.lock package.json
+        # commit changes
+        git commit --amend --no-edit --allow-empty -n 
+      env:
+        YARN_CHECKSUM_BEHAVIOR: update
+        YARN_ENABLE_SCRIPTS: 0
+    - name: Test
+      run: yarn test
+    - name: Push changes
+      uses: ad-m/github-push-action@v0.6.0
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        branch: ${{ env.GITHUB_REF_SLUG }}
+        force: true

@@ -1,106 +1,30 @@
-require('longjohn');
+const test = require('ava');
+const Execa = require('execa');
+const { readFileSync } = require('fs');
+const { sync: Globby } = require('globby');
+const { join } = require('path');
 
-const async = require('async');
-const format = require('util').format;
-const path = require('path');
-const glob = require('glob');
-const os = require('os');
+const bin = join(__dirname, '../bin/jsctags');
+const cwd = join(__dirname, 'fixtures');
 
-const bin = path.join(__dirname, '../bin/jsctags');
-const dir = path.join(__dirname, 'cases');
+for (const fixture of Globby('*.js', { cwd })) {
+  const input = readFileSync(join(cwd, fixture));
 
-const run = require('./run')({
-  bin,
-  dir
-});
+  for (const output of ['', '-f']) {
+    for (const arg of ['--file', '--find', '']) {
+      const args = [arg, fixture, output].filter(Boolean);
 
-const files = ['js', 'jsx']
-  .reduce((sum, ext) => {
-    const pattern = format('test/cases/*.%s', ext);
-    return sum.concat(
-      glob.sync(pattern, {
-        nosort: true,
-        silent: true
-      })
-    );
-  }, [])
-  .map(name => {
-    return {
-      name,
-      filename: path.resolve(process.cwd(), name)
-    };
-  });
+      test(args.join(' '), async (t) => {
+        const { stdout } = await Execa(bin, args, {
+          cwd,
+          input: arg === '--file' ? input : undefined,
+          stdio: 'pipe',
+        });
 
-async.forEachLimit(
-  files,
-  os.cpus().length,
-  (f, fn) => {
-    async.parallel(
-      [
-        async.apply(run, {
-          cmd: f.name,
-          filename: f.filename,
-          ext: '.json'
-        }),
-        async.apply(run, {
-          cmd: format('--file %s', f.name),
-          filename: f.filename,
-          ext: '.json',
-          stdin: true
-        }),
-        async.apply(run, {
-          cmd: format('--find %s', f.name),
-          filename: f.filename,
-          ext: '.json'
-        }),
-        async.apply(run, {
-          cmd: format('%s -f', f.name),
-          filename: f.filename,
-          ext: '.tags'
-        }),
-        async.apply(run, {
-          cmd: format('--file %s -f', f.name),
-          filename: f.filename,
-          ext: '.tags',
-          stdin: true
-        }),
-        async.apply(run, {
-          cmd: format('--find %s -f', f.name),
-          filename: f.filename,
-          ext: '.tags'
-        })
-      ],
-      fn
-    );
-  },
-  err => {
-    if (err) {
-      throw err;
+        t.snapshot(['jsctags', ...args].join(' '), 'Command');
+        t.snapshot(input.toString(), arg === '--file' ? 'stdin' : 'Source');
+        t.snapshot(stdout.replace(new RegExp(cwd, 'g'), '__DIR__'), 'Output');
+      });
     }
-
-    const names = files.map(f => {
-      return f.name;
-    });
-
-    async.series([
-      async.apply(run, {
-        name: '~all~ -f',
-        cmd: format('%s -f', names.join(' ')),
-        ext: '.tags'
-      }),
-      async.apply(run, {
-        name: '~all~',
-        cmd: format('%s', names.join(' ')),
-        ext: '.json'
-      }),
-      async.apply(run, {
-        cmd: '--find test/cases/*.js --find test/cases/*.jsx -f',
-        ext: '.tags'
-      }),
-      async.apply(run, {
-        cmd: '--find test/cases/*.js --find test/cases/*.jsx',
-        ext: '.json'
-      })
-    ]);
   }
-);
+}

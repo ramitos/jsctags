@@ -1,0 +1,133 @@
+name: Continuous Integration
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+
+jobs:
+###############################################################################
+# SETUP                                                                       #
+###############################################################################
+  setup:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Setup Node.js
+      uses: actions/setup-node@v2.1.1
+      with:
+        node-version: '14.x'
+    - name: Setup Cache
+      uses: actions/cache@v2.1.1
+      with:
+        path: .yarn
+        key: ${{ runner.os }}-node-modules-${{ hashFiles('yarn.lock') }}
+    - name: Install dependencies
+      run: yarn install --immutable
+      env:
+        YARN_CHECKSUM_BEHAVIOR: update
+
+###############################################################################
+# COMMITLINT                                                                  #
+###############################################################################
+  commitlint:
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+    - name: Commit Lint
+      uses: wagoid/commitlint-github-action@v2.0.3
+      with:
+        failOnWarnings: true
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+###############################################################################
+# ESLINT                                                                      #
+###############################################################################
+  eslint:
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Setup Node.js
+      uses: actions/setup-node@v2.1.1
+      with:
+        node-version: '14.x'
+    - name: Setup Cache
+      uses: actions/cache@v2.1.1
+      with:
+        path: .yarn
+        key: ${{ runner.os }}-node-modules-${{ hashFiles('yarn.lock') }}
+    - name: Install dependencies
+      run: yarn install --immutable
+      env:
+        YARN_CHECKSUM_BEHAVIOR: update
+    - name: ESLint
+      run: yarn run eslint
+
+###############################################################################
+# TEST                                                                        #
+###############################################################################
+  test:
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Setup Node.js
+      uses: actions/setup-node@v2.1.1
+      with:
+        node-version: '14.x'
+    - name: Setup Cache
+      uses: actions/cache@v2.1.1
+      with:
+        path: .yarn
+        key: ${{ runner.os }}-node-modules-${{ hashFiles('yarn.lock') }}
+    - name: Install dependencies
+      run: yarn install --immutable
+      env:
+        YARN_CHECKSUM_BEHAVIOR: update
+    - name: Test
+      run: yarn test
+
+###############################################################################
+# RELEASE                                                                     #
+###############################################################################
+  release:
+    needs: [eslint, commitlint, test]
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Setup Cache
+      uses: actions/cache@v2.1.1
+      with:
+        path: .yarn
+        key: ${{ runner.os }}-node-modules-${{ hashFiles('yarn.lock') }}
+    - name: Install dependencies
+      run: yarn install --immutable
+      env:
+        YARN_CHECKSUM_BEHAVIOR: update
+    - name: Generate release token
+      id: release_token
+      uses: tibdex/github-app-token@v1.1
+      with:
+        app_id: ${{ secrets.RELEASE_APP_ID }}
+        private_key: ${{ secrets.RELEASE_PRIVATE_KEY }}
+    - name: Get branch
+      uses: rlespinasse/github-slug-action@2.1.0
+    - name: Release
+      uses: ridedott/release-me-action@v3.2.3
+      if: ${{ env.GITHUB_REF_SLUG == 'master' }}
+      with:
+        node-module: true
+        release-rules: '[{"scope":"deps-dev","release":false},{"scope":"no-release","release":false},{"release":"patch","type":"build"},{"release":"patch","type":"chore"},{"release":"patch","type":"ci"},{"release":"patch","type":"docs"},{"release":"patch","type":"improvement"},{"release":"patch","type":"refactor"},{"release":"minor","type":"feat"},{"release":false,"subject":"*\\[skip release\\]*"}]'
+      env:
+        GITHUB_TOKEN: ${{ steps.release_token.outputs.token }}

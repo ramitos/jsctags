@@ -2,17 +2,20 @@
   "name": "jsctags",
   "version": "5.2.2",
   "description": "jsctags generator",
+  "license": "MIT",
   "keywords": [
     "ctags",
     "jsctags",
     "tern"
   ],
-  "homepage": "https://github.com/ramitos/jsctags",
+  "repository": "git@github.com:sergioramos/jsctags.git",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
   "bugs": {
-    "url": "http://github.com/ramitos/jsctags/issues",
+    "url": "http://github.com/sergioramos/jsctags/issues",
     "email": "mail@sergioramos.me"
   },
-  "license": "MIT",
   "main": "src/parser.js",
   "bin": {
     "jsctags": "bin/jsctags",
@@ -22,23 +25,19 @@
     "lib": "src",
     "bin": "bin"
   },
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/ramitos/jsctags.git"
-  },
   "scripts": {
-    "test": "NODE_ENV=test nyc node test",
-    "lint": "eslint . --fix",
-    "coverage": "nyc report --reporter=text-lcov | codeclimate-test-reporter"
+    "fmt": "prettier --config package.json --write '**/*'",
+    "test": "NODE_ENV=test c8 -r lcovonly -r text ava --tap --serial",
+    "eslint": "eslint . --ext .js"
   },
   "dependencies": {
-    "acorn": "^5.6.1",
-    "acorn-jsx": "^4.1.1",
-    "async": "^2.6.1",
+    "acorn": "^8.0.1",
+    "acorn-walk": "^8.0.0",
+    "async": "^3.2.0",
     "collect-stream": "^1.2.1",
-    "deepmerge": "^2.1.1",
+    "deepmerge": "^4.2.2",
     "force-array": "^3.1.0",
-    "glob": "^7.1.2",
+    "glob": "^7.1.6",
     "lodash.clonedeep": "^4.5.0",
     "lodash.defaults": "^4.2.0",
     "lodash.flatten": "^4.4.0",
@@ -52,23 +51,73 @@
     "lodash.sortby": "^4.7.0",
     "lodash.without": "^4.4.0",
     "node-uuid": "^1.4.8",
-    "object-hash": "^1.3.0",
+    "object-hash": "^2.0.3",
     "once": "^1.4.0",
     "optimist": "^0.6.1",
-    "tern": "^0.21.0",
-    "tern-jsx": "ramitos/tern-jsx#8587d84",
+    "tern": "^0.24.3",
     "tryor": "^0.1.2"
   },
   "devDependencies": {
-    "assert-diff": "^1.2.6",
-    "cli-color": "^1.2.0",
-    "codeclimate-test-reporter": "^0.5.0",
-    "eslint": "^4.19.1",
-    "eslint-config-xo-react": "^0.16.0",
-    "eslint-config-xo-space": "^0.18.0",
-    "eslint-plugin-react": "^7.8.2",
-    "longjohn": "^0.2.12",
-    "md5": "^2.2.1",
-    "nyc": "^12.0.1"
+    "@commitlint/cli": "^11.0.0",
+    "@commitlint/config-conventional": "^11.0.0",
+    "ava": "^3.13.0",
+    "babel-eslint": "^10.1.0",
+    "c8": "^7.3.1",
+    "eslint": "^7.9.0",
+    "eslint-config-prettier": "^6.12.0",
+    "eslint-config-react-app": "^5.2.1",
+    "eslint-config-xo-react": "^0.23.0",
+    "eslint-config-xo-space": "^0.25.0",
+    "eslint-plugin-flowtype": "^5.2.0",
+    "eslint-plugin-import": "^2.22.0",
+    "eslint-plugin-jsx-a11y": "^6.3.1",
+    "eslint-plugin-react": "^7.21.2",
+    "eslint-plugin-react-hooks": "^4.1.2",
+    "execa": "^4.0.3",
+    "globby": "^11.0.1",
+    "husky": "^4.3.0",
+    "lint-staged": "^10.4.0",
+    "prettier": "^2.1.2"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+    }
+  },
+  "lint-staged": {
+    "*.js": [
+      "eslint --fix",
+      "prettier --config package.json --write",
+      "git add"
+    ],
+    "*.*": [
+      "prettier --config package.json --write",
+      "git add"
+    ]
+  },
+  "eslintConfig": {
+    "extends": [
+      "eslint:recommended",
+      "xo-space/esnext",
+      "xo-react/space",
+      "react-app",
+      "prettier"
+    ],
+    "rules": {
+      "new-cap": 0,
+      "capitalized-comments": 0,
+      "camelcase": 0
+    }
+  },
+  "prettier": {
+    "bracketSpacing": true,
+    "jsxBracketSameLine": false,
+    "printWidth": 80,
+    "semi": true,
+    "singleQuote": true,
+    "tabWidth": 2,
+    "trailingComma": "all",
+    "useTabs": false
   }
 }

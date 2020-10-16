@@ -5,15 +5,15 @@ const includes = require('lodash.includes');
 const defaults = require('lodash.defaults');
 const isUndefined = require('lodash.isundefined');
 const get = require('lodash.get');
-const walk = require('acorn/dist/walk');
-const format = require('util').format;
+const walk = require('acorn-walk');
+const { format } = require('util');
 const forceArray = require('force-array');
 const infer = require('tern/lib/infer');
 
 const defnode = require('./defnode');
 const walkall = require('./walkall');
 
-const joinPaths = function(a, b) {
+const joinPaths = function (a, b) {
   if (a) {
     return a + '.' + b;
   }
@@ -21,14 +21,14 @@ const joinPaths = function(a, b) {
   return b;
 };
 
-const getId = function(n) {
+const getId = function (n) {
   return format('%d-%d', n.start, n.end);
 };
 
-const postCondenseReach = function(server, options, state) {
+const postCondenseReach = function (server, options, state) {
   const seenSpans = {};
 
-  const visitScope = function(state, scope, path) {
+  const visitScope = function (state, scope, path) {
     // Detect cycles
     if (scope._localScopeCondenseSeen) {
       return;
@@ -38,12 +38,12 @@ const postCondenseReach = function(server, options, state) {
 
     Object.keys(get(scope, 'props', {}))
       .sort()
-      .forEach(prop => {
+      .forEach((prop) => {
         visitAVal(state, scope.props[prop], joinPaths(path, prop));
       });
   };
 
-  const visitNode = function(state, node, path) {
+  const visitNode = function (state, node, path) {
     if (!node) {
       return;
     }
@@ -52,7 +52,7 @@ const postCondenseReach = function(server, options, state) {
       node,
       {
         path,
-        ids: []
+        ids: [],
       },
       walkall.makeVisitors((node, st, walk) => {
         if (includes(st.ids, getId(node))) {
@@ -69,26 +69,26 @@ const postCondenseReach = function(server, options, state) {
 
         walk(node, {
           ids: st.ids,
-          path: st.path
+          path: st.path,
         });
-      })
+      }),
     );
   };
 
-  const isArg = function(state, av) {
-    return get(av, 'propertyOf.fnType.args', []).some(arg => {
+  const isArg = function (state, av) {
+    return get(av, 'propertyOf.fnType.args', []).some((arg) => {
       return arg.propertyName === av.propertyName;
     });
   };
 
-  const isScoped = function(state, av) {
+  const isScoped = function (state, av) {
     const g = av.path === '<top>' || isUndefined(get(av, 'propertyOf.isBlock'));
 
     return g ? false : isArg(state, av);
   };
 
-  const getType = function(state, av, proto) {
-    const types = get(av, 'types', []).map(type => {
+  const getType = function (state, av, proto) {
+    const types = get(av, 'types', []).map((type) => {
       return get(type, 'proto.name');
     });
 
@@ -103,11 +103,11 @@ const postCondenseReach = function(server, options, state) {
     return single;
   };
 
-  const isConstructor = function(state, type) {
+  const isConstructor = function (state, type) {
     return !isUndefined(get(type, 'props.prototype'));
   };
 
-  const visitAVal = function(state, av, path) {
+  const visitAVal = function (state, av, path) {
     if (av._localScopeCondenseSeen) {
       return;
     }
@@ -137,13 +137,13 @@ const postCondenseReach = function(server, options, state) {
     const data = {
       scoped: isScoped(state, av),
       isArg: isArg(state, av),
-      type: getType(state, av)
+      type: getType(state, av),
     };
 
     state.types[path] = {
       type: av,
       span,
-      data: defaults(data, av.metaData)
+      data: defaults(data, av.metaData),
     };
 
     if (!av.originNode) {
@@ -151,24 +151,25 @@ const postCondenseReach = function(server, options, state) {
     }
 
     const node = av.originNode;
-    const ast = node.sourceFile.ast;
-    let defNode, type;
+    const { ast } = node.sourceFile;
+    let defNode;
+    let type;
 
     try {
       type = infer.expressionType({
         node: defNode,
-        state
+        state,
       });
     } catch (err) {}
 
     state.types[path].data = defaults(
       {
-        isConstructor: isConstructor(state, type)
+        isConstructor: isConstructor(state, type),
       },
-      state.types[path].data
+      state.types[path].data,
     );
 
-    forceArray(av.types).forEach(type => {
+    forceArray(av.types).forEach((type) => {
       visitScope(state, type, path);
     });
 
@@ -185,7 +186,7 @@ const postCondenseReach = function(server, options, state) {
   // prefixes if possible.
   Object.keys(state.types)
     .sort()
-    .forEach(path => {
+    .forEach((path) => {
       const data = state.types[path];
       seenSpans[data.span] = true;
 
@@ -193,10 +194,10 @@ const postCondenseReach = function(server, options, state) {
         {
           isConstructor: isConstructor(state, get(data, 'type')),
           type: getType(state, {
-            types: [data.type]
-          })
+            types: [data.type],
+          }),
         },
-        data.data
+        data.data,
       );
 
       if (data.type.originNode) {
@@ -206,16 +207,16 @@ const postCondenseReach = function(server, options, state) {
 
   Object.keys(state.types)
     .sort()
-    .forEach(path => {
+    .forEach((path) => {
       const data = state.types[path];
 
-      Object.keys(get(data, 'type.props', {})).forEach(prop => {
+      Object.keys(get(data, 'type.props', {})).forEach((prop) => {
         visitAVal(state, data.type.props[prop], joinPaths(path, prop));
       });
     });
 
   // Assume that file scope is not reachable.
-  state.cx.parent.files.forEach(file => {
+  state.cx.parent.files.forEach((file) => {
     const path = file.name.replace(/\./g, '`');
     visitScope(state, file.scope, path);
 
@@ -230,7 +231,7 @@ tern.registerPlugin('local-scope', (server, options) => {
     passes: {
       postCondenseReach(state) {
         postCondenseReach(server, options, state);
-      }
-    }
+      },
+    },
   };
 });

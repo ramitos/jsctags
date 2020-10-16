@@ -1,7 +1,0 @@
-grabbag	__DIR__/cautiouspropagation.js	/grabbag/;"	v	lineno:1
-<i>	__DIR__/cautiouspropagation.js	/foo\(\)/;"	v	lineno:2	namespace:grabbag
-abc	__DIR__/cautiouspropagation.js	/abc/;"	v	lineno:3	namespace:grabbag.<i>	type:number
-inner	__DIR__/cautiouspropagation.js	/inner/;"	v	lineno:5	type:number
-simple	__DIR__/cautiouspropagation.js	/simple/;"	v	lineno:8
-<i>	__DIR__/cautiouspropagation.js	/foo\(\)/;"	v	lineno:9	namespace:simple	type:string
-

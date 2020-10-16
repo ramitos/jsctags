@@ -12,7 +12,7 @@ var fs = require('fs');
 
 var jsctags = require('../');
 
-var dir = (function() {
+var dir = (function () {
   if (argv.dir) {
     return path.resolve(argv.dir);
   }
@@ -28,7 +28,7 @@ var dir = (function() {
   return '///null';
 })();
 
-var file = (function() {
+var file = (function () {
   if (argv.file) {
     return path.resolve(process.cwd(), argv.file);
   }
@@ -40,37 +40,37 @@ var file = (function() {
   var find = forceArray(argv.find);
   var files = !find.length
     ? argv._
-    : find.reduce(function(files, pattern) {
+    : find.reduce(function (files, pattern) {
         return files.concat(
           glob.sync(pattern, {
             nosort: true,
-            silent: true
-          })
+            silent: true,
+          }),
         );
       }, []);
 
-  return files.map(function(file) {
+  return files.map(function (file) {
     return path.resolve(process.cwd(), file);
   });
 })();
 
-var outputTags = function(tags) {
+var outputTags = function (tags) {
   var ctags = flatten(jsctags.ctags(tags));
   console.log(ctags.join(''));
 };
 
-var outputJSON = function(tags) {
+var outputJSON = function (tags) {
   console.log(JSON.stringify(flatten(forceArray(tags)), null, 2));
 };
 
-var onResults = function(err, results) {
+var onResults = function (err, results) {
   if (err) {
     throw err;
   }
 
   var fn = argv.f ? outputTags : outputJSON;
 
-  var tags = results.filter(function(res) {
+  var tags = results.filter(function (res) {
     if (res instanceof Error) {
       console.error(err);
       return false;
@@ -84,14 +84,14 @@ var onResults = function(err, results) {
   fn(tags);
 };
 
-var parse = function(ctx, fn) {
-  jsctags(ctx, function(err, tags) {
+var parse = function (ctx, fn) {
+  jsctags(ctx, function (err, tags) {
     if (err) {
       return fn(err);
     }
 
     tags.tagfile = ctx.file;
-    tags.forEach(function(tag) {
+    tags.forEach(function (tag) {
       tag.tagfile = ctx.file;
     });
 
@@ -99,8 +99,8 @@ var parse = function(ctx, fn) {
   });
 };
 
-var fromStdin = function() {
-  collect(process.stdin, function(err, content) {
+var fromStdin = function () {
+  collect(process.stdin, function (err, content) {
     if (err) {
       throw err;
     }
@@ -113,19 +113,19 @@ var fromStdin = function() {
       {
         file: file,
         dir: dir,
-        content: content
+        content: content,
       },
-      onResults
+      onResults,
     );
   });
 };
 
-var fromFiles = function() {
+var fromFiles = function () {
   var files = Array.isArray(file) ? file : [file];
   async.map(
     files,
-    function(file, fn) {
-      fs.readFile(file, 'utf8', function(err, content) {
+    function (file, fn) {
+      fs.readFile(file, 'utf8', function (err, content) {
         if (err) {
           return fn(null, err);
         }
@@ -134,13 +134,13 @@ var fromFiles = function() {
           {
             file: file,
             dir: dir,
-            content: content
+            content: content,
           },
-          fn
+          fn,
         );
       });
     },
-    onResults
+    onResults,
   );
 };
 
